@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea { font-family: 'JetBrains Mono', monospace; }
+    </style>
+
+    <title>JSON to TypeScript Generator | DevEngine</title>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT Inspector</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron Visualizer</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL Optimizer</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx Live</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Support Creator (EVM)</span>
+        </button>
+    </div>
+</nav>
+
+<main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white">JSON to TypeScript Converter</h1>
+            <p class="text-sm text-slate-400">Paste JSON below to generate strongly-typed TypeScript interfaces.</p>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="loadSample()" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 font-medium">Load Sample</button>
+            <button onclick="copyOutput()" class="px-3 py-1.5 text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded font-bold">Copy TypeScript</button>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[550px]">
+        <div class="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <label class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Raw JSON Input</label>
+            <textarea id="jsonInput" oninput="convert()" placeholder="Paste JSON here..." class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-emerald-400 font-mono focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+        </div>
+        <div class="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <label class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Generated TypeScript</label>
+            <textarea id="tsOutput" readonly placeholder="TypeScript interfaces will appear here..." class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-blue-300 font-mono focus:outline-none resize-none"></textarea>
+        </div>
+    </div>
+</main>
+<script>
+function convert() {
+    const input = document.getElementById('jsonInput').value;
+    const output = document.getElementById('tsOutput');
+    if (!input.trim()) {
+        output.value = '';
+        return;
+    }
+    try {
+        const parsed = JSON.parse(input);
+        output.value = jsonToTs(parsed, 'RootObject');
+    } catch (e) {
+        output.value = '// Invalid JSON: ' + e.message;
+    }
+}
+
+function jsonToTs(obj, rootName) {
+    let interfaces = [];
+    function parseObject(o, name) {
+        if (o === null) return 'null';
+        if (Array.isArray(o)) {
+            if (o.length === 0) return 'any[]';
+            const itemType = parseObject(o[0], name + 'Item');
+            return itemType + '[]';
+        }
+        if (typeof o === 'object') {
+            let res = 'export interface ' + name + ' {\n';
+            for (const [k, v] of Object.entries(o)) {
+                const key = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(k) ? k : JSON.stringify(k);
+                let typeStr = typeof v;
+                if (v === null) typeStr = 'null';
+                else if (Array.isArray(v)) {
+                    typeStr = v.length > 0 ? (typeof v[0] === 'object' && v[0] !== null ? capitalize(k) + 'Item[]' : typeof v[0] + '[]') : 'any[]';
+                    if (v.length > 0 && typeof v[0] === 'object' && v[0] !== null) {
+                        parseObject(v[0], capitalize(k) + 'Item');
+                    }
+                } else if (typeStr === 'object') {
+                    const subName = capitalize(k);
+                    typeStr = subName;
+                    parseObject(v, subName);
+                }
+                res += '  ' + key + ': ' + typeStr + ';\n';
+            }
+            res += '}\n';
+            interfaces.push(res);
+            return name;
+        }
+        return typeof o;
+    }
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+    parseObject(obj, rootName);
+    return interfaces.reverse().join('\n');
+}
+
+function loadSample() {
+    const sample = {
+        userId: 1048,
+        username: "web3_developer",
+        active: true,
+        profile: {
+            displayName: "Dev Engine",
+            tier: "pro",
+            reputation: 98.4
+        },
+        tags: ["typescript", "cloudflare", "solana"],
+        wallets: [
+            { network: "EVM", address: "0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE", isPrimary: true }
+        ]
+    };
+    document.getElementById('jsonInput').value = JSON.stringify(sample, null, 2);
+    convert();
+}
+
+function copyOutput() {
+    navigator.clipboard.writeText(document.getElementById('tsOutput').value);
+    showToast('TypeScript definitions copied to clipboard');
+}
+window.onload = loadSample;
+</script>
+
+<footer class="mt-20 border-t border-slate-800 bg-slate-950 py-12 px-6 text-center text-slate-500 text-sm">
+    <div class="max-w-4xl mx-auto space-y-4">
+        <div class="flex justify-center space-x-6">
+            <a href="json-to-ts.html" class="hover:text-slate-300">JSON to TS</a>
+            <a href="jwt-debugger.html" class="hover:text-slate-300">JWT Debugger</a>
+            <a href="cron-visualizer.html" class="hover:text-slate-300">Cron Visualizer</a>
+            <a href="sql-optimizer.html" class="hover:text-slate-300">SQL Optimizer</a>
+            <a href="regex-tester.html" class="hover:text-slate-300">RegEx Lab</a>
+        </div>
+        <p class="text-xs text-slate-600">Privacy First: 100% Client-Side computation. Your payloads and secrets never leave your browser.</p>
+        <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-400">
+            <span>Donations / Coffee (BSC/ETH/Polygon/Base):</span>
+            <code class="text-emerald-400 font-mono">0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE</code>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg shadow-xl translate-y-20 opacity-0 transition duration-300 pointer-events-none text-sm z-50">
+    Copied to Clipboard!
+</div>
+<script>
+function copyWallet() {
+    navigator.clipboard.writeText('0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
+    showToast('Wallet address copied: 0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
+}
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+}
+</script>
+</body>
+</html>

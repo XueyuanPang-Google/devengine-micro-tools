@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea { font-family: 'JetBrains Mono', monospace; }
+    </style>
+
+    <title>JWT Inspector & Debugger | DevEngine</title>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT Inspector</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron Visualizer</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL Optimizer</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx Live</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Support Creator (EVM)</span>
+        </button>
+    </div>
+</nav>
+
+<main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-white">JWT Debugger & Claim Auditor</h1>
+        <p class="text-sm text-slate-400">Decode and audit JSON Web Tokens entirely offline. Zero network calls.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[550px]">
+        <div class="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <label class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Encoded Token</label>
+            <textarea id="jwtInput" oninput="decodeJwt()" placeholder="Paste JWT token (e.g. eyJhbGciOiJIUzI1NiIsIn...)" class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-amber-400 font-mono focus:outline-none focus:border-amber-500 resize-none break-all"></textarea>
+        </div>
+        <div class="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl p-4 overflow-y-auto space-y-4">
+            <div>
+                <label class="text-xs font-semibold text-red-400 uppercase tracking-wider">Header (Algorithm & Token Type)</label>
+                <pre id="headerOutput" class="mt-1 bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-red-300 font-mono"></pre>
+            </div>
+            <div class="flex-1">
+                <label class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Payload (Claims & Data)</label>
+                <pre id="payloadOutput" class="mt-1 bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-purple-300 font-mono"></pre>
+            </div>
+            <div id="expiryBadge" class="p-3 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-300"></div>
+        </div>
+    </div>
+</main>
+<script>
+function decodeJwt() {
+    const token = document.getElementById('jwtInput').value.trim();
+    const hOut = document.getElementById('headerOutput');
+    const pOut = document.getElementById('payloadOutput');
+    const expBadge = document.getElementById('expiryBadge');
+    
+    if (!token) {
+        hOut.innerText = 'Waiting for input...';
+        pOut.innerText = 'Waiting for input...';
+        expBadge.innerText = '';
+        return;
+    }
+    
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+        hOut.innerText = '// Invalid JWT structure (must contain 3 dot-separated segments)';
+        pOut.innerText = '';
+        expBadge.innerText = '';
+        return;
+    }
+    
+    try {
+        const header = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')));
+        const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+        hOut.innerText = JSON.stringify(header, null, 2);
+        pOut.innerText = JSON.stringify(payload, null, 2);
+        
+        if (payload.exp) {
+            const expDate = new Date(payload.exp * 1000);
+            const isExpired = Date.now() > payload.exp * 1000;
+            expBadge.innerHTML = `<span class="${isExpired ? 'text-red-400 font-bold' : 'text-emerald-400 font-bold'}">${isExpired ? '🔴 EXPIRED' : '🟢 ACTIVE'}</span> &middot; Expiration: ${expDate.toUTCString()}`;
+        } else {
+            expBadge.innerHTML = `<span class="text-slate-400">ℹ️ No 'exp' claim present</span>`;
+        }
+    } catch (e) {
+        hOut.innerText = '// Error decoding Base64 payload: ' + e.message;
+    }
+}
+
+window.onload = function() {
+    document.getElementById('jwtInput').value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaWNlIERldiIsImFkbWluIjp0cnVlLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTc5ODc2NTQzMn0.X5y...";
+    decodeJwt();
+};
+</script>
+
+<footer class="mt-20 border-t border-slate-800 bg-slate-950 py-12 px-6 text-center text-slate-500 text-sm">
+    <div class="max-w-4xl mx-auto space-y-4">
+        <div class="flex justify-center space-x-6">
+            <a href="json-to-ts.html" class="hover:text-slate-300">JSON to TS</a>
+            <a href="jwt-debugger.html" class="hover:text-slate-300">JWT Debugger</a>
+            <a href="cron-visualizer.html" class="hover:text-slate-300">Cron Visualizer</a>
+            <a href="sql-optimizer.html" class="hover:text-slate-300">SQL Optimizer</a>
+            <a href="regex-tester.html" class="hover:text-slate-300">RegEx Lab</a>
+        </div>
+        <p class="text-xs text-slate-600">Privacy First: 100% Client-Side computation. Your payloads and secrets never leave your browser.</p>
+        <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-400">
+            <span>Donations / Coffee (BSC/ETH/Polygon/Base):</span>
+            <code class="text-emerald-400 font-mono">0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE</code>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg shadow-xl translate-y-20 opacity-0 transition duration-300 pointer-events-none text-sm z-50">
+    Copied to Clipboard!
+</div>
+<script>
+function copyWallet() {
+    navigator.clipboard.writeText('0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
+    showToast('Wallet address copied: 0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
+}
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg;
+    t.classList.remove('translate-y-20', 'opacity-0');
+    setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+}
+</script>
+</body>
+</html>
