@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Studio & WCAG Contrast - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 18 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>
+<main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
+    <div class="mb-8">
+        <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
+            <i class="fa-solid fa-palette"></i><span>Design & Accessibility</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">Color Studio & WCAG Contrast Checker</h1>
+        <p class="text-slate-400 text-sm mt-1">Convert color spaces (HEX, RGB, HSL, CSS), generate tonal palettes, and audit accessibility contrast ratios.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left: Color Picker & Converters -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col space-y-5">
+            <div class="flex items-center space-x-4">
+                <input type="color" id="color-picker" value="#22c55e" oninput="updateFromPicker(this.value)" class="w-16 h-16 rounded-xl cursor-pointer bg-transparent border-2 border-slate-700">
+                <div class="flex-grow">
+                    <label class="text-xs font-semibold uppercase text-slate-400">HEX Code</label>
+                    <input type="text" id="hex-input" value="#22c55e" oninput="updateFromHex(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm font-mono text-emerald-400 focus:outline-none focus:border-emerald-500 mt-1">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs font-semibold uppercase text-slate-400">RGB</label>
+                    <input type="text" id="rgb-input" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-300 mt-1 cursor-pointer" onclick="copyText('rgb-input')">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold uppercase text-slate-400">HSL</label>
+                    <input type="text" id="hsl-input" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-300 mt-1 cursor-pointer" onclick="copyText('hsl-input')">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-semibold uppercase text-slate-400">CSS Color Formats</label>
+                <div class="mt-2 space-y-2">
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-xs font-mono">
+                        <span id="css-rgb" class="text-slate-300">rgb(34, 197, 94)</span>
+                        <button onclick="copyText('css-rgb')" class="text-emerald-400 hover:text-emerald-300"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-2.5 rounded-lg text-xs font-mono">
+                        <span id="css-hsl" class="text-slate-300">hsl(142, 71%, 45%)</span>
+                        <button onclick="copyText('css-hsl')" class="text-emerald-400 hover:text-emerald-300"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-semibold uppercase text-slate-400">Tonal Palette (Luminance steps)</label>
+                <div id="palette-steps" class="grid grid-cols-5 gap-2 mt-2"></div>
+            </div>
+        </div>
+
+        <!-- Right: WCAG Contrast Checker -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col space-y-5">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center">
+                <i class="fa-solid fa-eye text-emerald-400 mr-2"></i>WCAG 2.1 Contrast Audit
+            </h3>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs font-semibold text-slate-400">Foreground (Text)</label>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <input type="color" id="fg-picker" value="#ffffff" oninput="updateContrast()" class="w-8 h-8 rounded cursor-pointer bg-transparent border border-slate-700">
+                        <input type="text" id="fg-hex" value="#ffffff" oninput="syncFg(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs font-mono text-slate-300">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-400">Background</label>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <input type="color" id="bg-picker" value="#22c55e" oninput="updateContrast()" class="w-8 h-8 rounded cursor-pointer bg-transparent border border-slate-700">
+                        <input type="text" id="bg-hex" value="#22c55e" oninput="syncBg(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs font-mono text-slate-300">
+                    </div>
+                </div>
+            </div>
+
+            <div id="contrast-preview" class="p-6 rounded-xl border border-slate-700 text-center transition-all">
+                <div class="text-2xl font-bold">Preview Sample Text</div>
+                <div class="text-xs mt-1">The quick brown fox jumps over the lazy dog.</div>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-slate-400">Contrast Ratio</div>
+                    <div id="contrast-ratio" class="text-3xl font-extrabold text-white">4.5:1</div>
+                </div>
+                <div class="flex space-x-2">
+                    <div id="badge-aa" class="px-3 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">AA Pass</div>
+                    <div id="badge-aaa" class="px-3 py-1 rounded text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">AAA Pass</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</main>
+
+<script>
+function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const num = parseInt(hex, 16);
+    if (isNaN(num)) return { r: 34, g: 197, b: 94 };
+    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + [r, g, b].map(x => {
+        const h = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+        return h.length === 1 ? '0' + h : h;
+    }).join('');
+}
+
+function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+        h = s = 0;
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function getLuminance(r, g, b) {
+    const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+}
+
+function updateColorUI(hex) {
+    const rgb = hexToRgb(hex);
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    
+    document.getElementById('hex-input').value = hex;
+    document.getElementById('color-picker').value = hex;
+    document.getElementById('rgb-input').value = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+    document.getElementById('hsl-input').value = `${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
+    document.getElementById('css-rgb').innerText = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+    document.getElementById('css-hsl').innerText = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+
+    const container = document.getElementById('palette-steps');
+    container.innerHTML = '';
+    const steps = [0.9, 0.7, 0.5, 0.3, 0.1];
+    steps.forEach(factor => {
+        const pr = Math.round(rgb.r * factor + (1 - factor) * 255);
+        const pg = Math.round(rgb.g * factor + (1 - factor) * 255);
+        const pb = Math.round(rgb.b * factor + (1 - factor) * 255);
+        const pHex = rgbToHex(pr, pg, pb);
+        const div = document.createElement('div');
+        div.className = 'h-12 rounded-lg cursor-pointer flex items-center justify-center text-[10px] font-mono font-bold shadow';
+        div.style.backgroundColor = pHex;
+        div.style.color = factor > 0.5 ? '#000000' : '#ffffff';
+        div.innerText = pHex;
+        div.onclick = () => { updateFromHex(pHex); showToast('Color copied & selected: ' + pHex); };
+        container.appendChild(div);
+    });
+
+    document.getElementById('bg-picker').value = hex;
+    document.getElementById('bg-hex').value = hex;
+    updateContrast();
+}
+
+function updateFromPicker(val) { updateColorUI(val); }
+function updateFromHex(val) {
+    if (/^#[0-9A-F]{6}$/i.test(val)) {
+        updateColorUI(val);
+    }
+}
+function syncFg(val) {
+    if (/^#[0-9A-F]{6}$/i.test(val)) {
+        document.getElementById('fg-picker').value = val;
+        updateContrast();
+    }
+}
+function syncBg(val) {
+    if (/^#[0-9A-F]{6}$/i.test(val)) {
+        document.getElementById('bg-picker').value = val;
+        updateContrast();
+    }
+}
+
+function updateContrast() {
+    const fg = document.getElementById('fg-picker').value;
+    const bg = document.getElementById('bg-picker').value;
+    document.getElementById('fg-hex').value = fg;
+    document.getElementById('bg-hex').value = bg;
+
+    const fgRgb = hexToRgb(fg);
+    const bgRgb = hexToRgb(bg);
+
+    const l1 = getLuminance(fgRgb.r, fgRgb.g, fgRgb.b);
+    const l2 = getLuminance(bgRgb.r, bgRgb.g, bgRgb.b);
+    const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    const roundedRatio = ratio.toFixed(2);
+
+    document.getElementById('contrast-ratio').innerText = `${roundedRatio}:1`;
+
+    const preview = document.getElementById('contrast-preview');
+    preview.style.backgroundColor = bg;
+    preview.style.color = fg;
+
+    const aa = document.getElementById('badge-aa');
+    const aaa = document.getElementById('badge-aaa');
+
+    if (ratio >= 4.5) {
+        aa.className = 'px-3 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        aa.innerText = 'AA Pass';
+    } else {
+        aa.className = 'px-3 py-1 rounded text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30';
+        aa.innerText = 'AA Fail';
+    }
+
+    if (ratio >= 7.0) {
+        aaa.className = 'px-3 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        aaa.innerText = 'AAA Pass';
+    } else {
+        aaa.className = 'px-3 py-1 rounded text-xs font-bold bg-slate-800 text-slate-500 border border-slate-700';
+        aaa.innerText = 'AAA Fail';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateColorUI('#22c55e');
+});
+</script>
+
+<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON to TypeScript - DevEngine Pro - DevEngine Pro</title>
+    <title>CSS Box-Shadow & Glassmorphism - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -56,30 +56,45 @@
 <main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
     <div class="mb-8">
         <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
-            <i class="fa-solid fa-code"></i><span>Type Inference Engine</span>
+            <i class="fa-solid fa-layer-group"></i><span>Visual UI Style Engine</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">JSON to TypeScript Converter</h1>
-        <p class="text-slate-400 text-sm mt-1">Convert JSON payloads into clean, idiomatic TypeScript interfaces with nested object deduction.</p>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">CSS Box-Shadow & Glassmorphism Generator</h1>
+        <p class="text-slate-400 text-sm mt-1">Design smooth modern shadows, neon glows, and frosted glass backdrop filter cards with pure CSS.</p>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">JSON Input</label>
-                <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample</button>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-5 space-y-4 bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div>
+                <label class="text-xs text-slate-400 font-semibold flex justify-between"><span>Blur (px)</span><span id="v-blur">24px</span></label>
+                <input type="range" id="blur" min="0" max="100" value="24" oninput="updateStyle()" class="w-full accent-emerald-500">
             </div>
-            <textarea id="json-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste your JSON here..."></textarea>
+            <div>
+                <label class="text-xs text-slate-400 font-semibold flex justify-between"><span>Spread / Offset Y</span><span id="v-spread">8px</span></label>
+                <input type="range" id="spread" min="0" max="60" value="8" oninput="updateStyle()" class="w-full accent-emerald-500">
+            </div>
+            <div>
+                <label class="text-xs text-slate-400 font-semibold flex justify-between"><span>Shadow Opacity</span><span id="v-opacity">0.45</span></label>
+                <input type="range" id="opacity" min="0" max="1" step="0.05" value="0.45" oninput="updateStyle()" class="w-full accent-emerald-500">
+            </div>
+            <div>
+                <label class="text-xs text-slate-400 font-semibold flex justify-between"><span>Backdrop Blur (Glass)</span><span id="v-glass">16px</span></label>
+                <input type="range" id="glass" min="0" max="40" value="16" oninput="updateStyle()" class="w-full accent-emerald-500">
+            </div>
         </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">TypeScript Interface</label>
-                <button onclick="copyText('ts-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Code</button>
+        <div class="lg:col-span-7 flex flex-col items-center justify-center bg-slate-900/50 border border-slate-800 rounded-xl p-8 min-h-[300px] relative overflow-hidden">
+            <div class="absolute -top-12 -left-12 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-blue-500/20 rounded-full blur-3xl"></div>
+            <div id="preview-box" class="w-72 h-44 rounded-2xl border border-white/20 flex flex-col items-center justify-center p-4 text-center z-10 transition-all">
+                <div class="text-lg font-bold text-white">DevEngine Card</div>
+                <div class="text-xs text-emerald-400 mt-1">Live Glass Preview</div>
             </div>
-            <textarea id="ts-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Generated TypeScript output will appear here..."></textarea>
         </div>
     </div>
-    <div class="mt-4 flex space-x-3">
-        <button onclick="convertToTs()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-bolt mr-2"></i>Generate TypeScript</button>
-        <button onclick="clearAll()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition">Clear</button>
+    <div class="mt-6">
+        <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">CSS Snippet</label>
+            <button onclick="copyText('css-code')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy CSS</button>
+        </div>
+        <textarea id="css-code" readonly class="w-full h-28 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none"></textarea>
     </div>
     <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
         <div class="flex items-center space-x-3">
@@ -90,70 +105,31 @@
     </div>
 </main>
 <script>
-function jsonToTs(obj, rootName = "RootObject") {
-    let interfaces = [];
-    function getType(value, key) {
-        if (value === null) return "any";
-        if (Array.isArray(value)) {
-            if (value.length === 0) return "any[]";
-            return getType(value[0], key) + "[]";
-        }
-        if (typeof value === "object") {
-            const childName = key.charAt(0).toUpperCase() + key.slice(1);
-            buildInterface(value, childName);
-            return childName;
-        }
-        return typeof value;
-    }
-    function buildInterface(data, name) {
-        let lines = [`export interface ${name} {`];
-        for (let k in data) {
-            const type = getType(data[k], k);
-            lines.push(`  ${k}: ${type};`);
-        }
-        lines.push("}");
-        interfaces.push(lines.join("\n"));
-    }
-    buildInterface(obj, rootName);
-    return interfaces.reverse().join("\n\n");
+function updateStyle() {
+    const blur = document.getElementById('blur').value;
+    const spread = document.getElementById('spread').value;
+    const op = document.getElementById('opacity').value;
+    const glass = document.getElementById('glass').value;
+    
+    document.getElementById('v-blur').innerText = blur + 'px';
+    document.getElementById('v-spread').innerText = spread + 'px';
+    document.getElementById('v-opacity').innerText = op;
+    document.getElementById('v-glass').innerText = glass + 'px';
+    
+    const box = document.getElementById('preview-box');
+    const shadow = `0px ${spread}px ${blur}px rgba(16, 185, 129, ${op})`;
+    const bg = `rgba(15, 23, 42, 0.65)`;
+    const filter = `blur(${glass}px)`;
+    
+    box.style.boxShadow = shadow;
+    box.style.backgroundColor = bg;
+    box.style.backdropFilter = filter;
+    box.style.webkitBackdropFilter = filter;
+    
+    const code = `background: ${bg};\nbox-shadow: ${shadow};\nbackdrop-filter: ${filter};\n-webkit-backdrop-filter: ${filter};\nborder: 1px solid rgba(255, 255, 255, 0.15);\nborder-radius: 1rem;`;
+    document.getElementById('css-code').value = code;
 }
-function convertToTs() {
-    try {
-        const input = document.getElementById("json-input").value;
-        const parsed = JSON.parse(input);
-        document.getElementById("ts-output").value = jsonToTs(parsed);
-        showToast("TypeScript interfaces generated!");
-    } catch (e) {
-        alert("Invalid JSON format: " + e.message);
-    }
-}
-function loadSample() {
-    document.getElementById("json-input").value = JSON.stringify({
-        id: "usr_99182",
-        username: "alex_dev",
-        email: "alex@example.com",
-        isActive: true,
-        roles: ["admin", "developer"],
-        profile: {
-            avatarUrl: "https://avatar.dev/99182",
-            bio: "Building zero-capital Micro-SaaS tools",
-            social: {
-                github: "alexdev",
-                twitter: "@alex_tweets"
-            }
-        },
-        stats: {
-            loginCount: 42,
-            reputation: 98.5
-        }
-    }, null, 2);
-    convertToTs();
-}
-function clearAll() {
-    document.getElementById("json-input").value = "";
-    document.getElementById("ts-output").value = "";
-}
-window.onload = loadSample;
+window.onload = updateStyle;
 </script>
 
 <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON to TypeScript - DevEngine Pro - DevEngine Pro</title>
+    <title>Timestamp & Timezone Converter - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -56,30 +56,42 @@
 <main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
     <div class="mb-8">
         <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
-            <i class="fa-solid fa-code"></i><span>Type Inference Engine</span>
+            <i class="fa-solid fa-stopwatch"></i><span>Unix Epoch Studio</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">JSON to TypeScript Converter</h1>
-        <p class="text-slate-400 text-sm mt-1">Convert JSON payloads into clean, idiomatic TypeScript interfaces with nested object deduction.</p>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">Timestamp & Timezone Converter</h1>
+        <p class="text-slate-400 text-sm mt-1">Convert Unix epoch timestamps (seconds/milliseconds) to human ISO-8601, UTC, and local date formats.</p>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+            <div class="text-xs text-slate-400">Current Epoch Timestamp</div>
+            <div id="live-epoch" class="text-3xl font-bold font-mono text-emerald-400 mt-1">0</div>
+        </div>
+        <button onclick="setNow()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg border border-slate-700"><i class="fa-solid fa-clock mr-1"></i>Set Current Time</button>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">JSON Input</label>
-                <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample</button>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Timestamp to Date</h2>
+            <div>
+                <label class="text-xs text-slate-400 mb-1 block">Epoch Timestamp (sec or ms)</label>
+                <input type="number" id="ts-input" oninput="convertTimestamp()" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm font-mono text-emerald-300">
             </div>
-            <textarea id="json-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste your JSON here..."></textarea>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">TypeScript Interface</label>
-                <button onclick="copyText('ts-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Code</button>
+            <div class="space-y-2 pt-2">
+                <div class="text-xs text-slate-400">ISO 8601: <span id="r-iso" class="text-slate-200 font-mono font-semibold"></span></div>
+                <div class="text-xs text-slate-400">UTC Date: <span id="r-utc" class="text-slate-200 font-mono font-semibold"></span></div>
+                <div class="text-xs text-slate-400">Local Time: <span id="r-local" class="text-emerald-400 font-mono font-semibold"></span></div>
             </div>
-            <textarea id="ts-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Generated TypeScript output will appear here..."></textarea>
         </div>
-    </div>
-    <div class="mt-4 flex space-x-3">
-        <button onclick="convertToTs()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-bolt mr-2"></i>Generate TypeScript</button>
-        <button onclick="clearAll()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition">Clear</button>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Date to Timestamp</h2>
+            <div>
+                <label class="text-xs text-slate-400 mb-1 block">Datetime Picker</label>
+                <input type="datetime-local" id="date-input" oninput="convertDate()" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm font-mono text-emerald-300">
+            </div>
+            <div class="space-y-2 pt-2">
+                <div class="text-xs text-slate-400">Epoch Seconds: <span id="d-sec" class="text-emerald-400 font-mono font-semibold"></span></div>
+                <div class="text-xs text-slate-400">Epoch Milliseconds: <span id="d-ms" class="text-slate-200 font-mono font-semibold"></span></div>
+            </div>
+        </div>
     </div>
     <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
         <div class="flex items-center space-x-3">
@@ -90,70 +102,35 @@
     </div>
 </main>
 <script>
-function jsonToTs(obj, rootName = "RootObject") {
-    let interfaces = [];
-    function getType(value, key) {
-        if (value === null) return "any";
-        if (Array.isArray(value)) {
-            if (value.length === 0) return "any[]";
-            return getType(value[0], key) + "[]";
-        }
-        if (typeof value === "object") {
-            const childName = key.charAt(0).toUpperCase() + key.slice(1);
-            buildInterface(value, childName);
-            return childName;
-        }
-        return typeof value;
-    }
-    function buildInterface(data, name) {
-        let lines = [`export interface ${name} {`];
-        for (let k in data) {
-            const type = getType(data[k], k);
-            lines.push(`  ${k}: ${type};`);
-        }
-        lines.push("}");
-        interfaces.push(lines.join("\n"));
-    }
-    buildInterface(obj, rootName);
-    return interfaces.reverse().join("\n\n");
+function updateLiveEpoch() {
+    document.getElementById('live-epoch').innerText = Math.floor(Date.now() / 1000);
 }
-function convertToTs() {
-    try {
-        const input = document.getElementById("json-input").value;
-        const parsed = JSON.parse(input);
-        document.getElementById("ts-output").value = jsonToTs(parsed);
-        showToast("TypeScript interfaces generated!");
-    } catch (e) {
-        alert("Invalid JSON format: " + e.message);
-    }
+setInterval(updateLiveEpoch, 1000);
+function convertTimestamp() {
+    let val = parseInt(document.getElementById('ts-input').value);
+    if (isNaN(val)) return;
+    if (val < 10000000000) val = val * 1000;
+    const d = new Date(val);
+    document.getElementById('r-iso').innerText = d.toISOString();
+    document.getElementById('r-utc').innerText = d.toUTCString();
+    document.getElementById('r-local').innerText = d.toLocaleString();
 }
-function loadSample() {
-    document.getElementById("json-input").value = JSON.stringify({
-        id: "usr_99182",
-        username: "alex_dev",
-        email: "alex@example.com",
-        isActive: true,
-        roles: ["admin", "developer"],
-        profile: {
-            avatarUrl: "https://avatar.dev/99182",
-            bio: "Building zero-capital Micro-SaaS tools",
-            social: {
-                github: "alexdev",
-                twitter: "@alex_tweets"
-            }
-        },
-        stats: {
-            loginCount: 42,
-            reputation: 98.5
-        }
-    }, null, 2);
-    convertToTs();
+function convertDate() {
+    const val = document.getElementById('date-input').value;
+    if (!val) return;
+    const d = new Date(val);
+    document.getElementById('d-sec').innerText = Math.floor(d.getTime() / 1000);
+    document.getElementById('d-ms').innerText = d.getTime();
 }
-function clearAll() {
-    document.getElementById("json-input").value = "";
-    document.getElementById("ts-output").value = "";
+function setNow() {
+    const now = Date.now();
+    document.getElementById('ts-input').value = Math.floor(now / 1000);
+    convertTimestamp();
 }
-window.onload = loadSample;
+window.onload = function() {
+    updateLiveEpoch();
+    setNow();
+};
 </script>
 
 <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">

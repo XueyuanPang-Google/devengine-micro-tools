@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter & Beautifier - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -26,100 +26,124 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        pre, code, textarea { font-family: 'JetBrains Mono', monospace; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
     </style>
-
-    <title>SQL Query Formatter & Beautifier | DevEngine</title>
+    
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
-
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
 <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
     <div class="flex items-center space-x-3">
         <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
         <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
     </div>
-    <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-400">
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
         <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
-        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT Inspector</a>
-        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron Visualizer</a>
-        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL Optimizer</a>
-        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx Live</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 18 Tools &rarr;</a>
     </div>
     <div class="flex items-center space-x-3">
         <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
             <i class="fa-solid fa-wallet text-emerald-400"></i>
-            <span>Support Creator (EVM)</span>
+            <span>Tip Creator (EVM)</span>
         </button>
     </div>
 </nav>
-
-<main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-white">SQL Query Formatter & Beautifier</h1>
-            <p class="text-sm text-slate-400">Standardize SQL queries across PostgreSQL, MySQL, SQLite, and Snowflake.</p>
+<main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
+    <div class="mb-8">
+        <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
+            <i class="fa-solid fa-database"></i><span>Query Prettifier</span>
         </div>
-        <button onclick="formatSql()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg font-bold text-xs">Format Query</button>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">SQL Formatter & Beautifier</h1>
+        <p class="text-slate-400 text-sm mt-1">Clean, uppercase reserved keywords, and structure messy SQL queries into standard production syntax.</p>
     </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[550px]">
-        <div class="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl p-4">
-            <label class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Unformatted SQL</label>
-            <textarea id="sqlIn" placeholder="SELECT id, name FROM users WHERE active = 1 GROUP BY id ORDER BY created_at DESC;" class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 font-mono focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Raw SQL</label>
+                <button onclick="loadSampleSql()" class="text-xs text-emerald-400 hover:underline">Sample SQL</button>
+            </div>
+            <textarea id="sql-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="select u.id, u.name from users u left join orders o on u.id = o.user_id where o.amount > 100 group by u.id order by u.name desc;"></textarea>
         </div>
-        <div class="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl p-4">
-            <label class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Formatted Output</label>
-            <textarea id="sqlOut" readonly class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-emerald-400 font-mono focus:outline-none resize-none"></textarea>
+        <div class="flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Formatted Output</label>
+                <button onclick="copyText('sql-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy SQL</button>
+            </div>
+            <textarea id="sql-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Formatted SQL will appear here..."></textarea>
         </div>
+    </div>
+    <div class="mt-4 flex space-x-3">
+        <button onclick="formatSql()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Format SQL</button>
+    </div>
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
     </div>
 </main>
 <script>
+const SQL_KEYWORDS = ["SELECT", "FROM", "WHERE", "AND", "OR", "JOIN", "LEFT JOIN", "RIGHT JOIN", "INNER JOIN", "OUTER JOIN", "ON", "GROUP BY", "ORDER BY", "HAVING", "LIMIT", "OFFSET", "INSERT INTO", "VALUES", "UPDATE", "SET", "DELETE", "CREATE TABLE", "ALTER TABLE", "DROP TABLE", "AS", "IN", "NOT IN", "IS NULL", "IS NOT NULL", "BETWEEN", "LIKE", "UNION", "UNION ALL"];
 function formatSql() {
-    let sql = document.getElementById('sqlIn').value;
-    const keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'JOIN', 'GROUP BY', 'ORDER BY', 'LIMIT', 'HAVING', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM'];
-    
-    keywords.forEach(kw => {
-        const regex = new RegExp('\\b' + kw + '\\b', 'gi');
-        sql = sql.replace(regex, '\n' + kw);
+    let sql = document.getElementById('sql-input').value.trim();
+    if(!sql) return;
+    SQL_KEYWORDS.forEach(kw => {
+        const reg = new RegExp('\\b' + kw.replace(/ /g, '\\s+') + '\\b', 'gi');
+        sql = sql.replace(reg, kw);
     });
-    
-    document.getElementById('sqlOut').value = sql.trim();
+    const newlineKw = ["SELECT", "FROM", "WHERE", "AND", "OR", "LEFT JOIN", "RIGHT JOIN", "INNER JOIN", "JOIN", "GROUP BY", "ORDER BY", "HAVING", "LIMIT", "SET", "VALUES"];
+    newlineKw.forEach(kw => {
+        const reg = new RegExp('(\\s*)(' + kw + ')(\\s+)', 'g');
+        sql = sql.replace(reg, '\n$2 ');
+    });
+    document.getElementById('sql-output').value = sql.trim();
+    showToast("SQL Formatted!");
 }
-window.onload = function() {
-    document.getElementById('sqlIn').value = "SELECT u.id, u.email, count(o.id) as total_orders FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.created_at >= '2026-01-01' AND u.status = 'active' GROUP BY u.id, u.email HAVING count(o.id) > 5 ORDER BY total_orders DESC LIMIT 50;";
+function loadSampleSql() {
+    document.getElementById('sql-input').value = "select u.id, u.email, count(o.id) as total_orders, sum(o.amount) as revenue from users u left join orders o on u.id = o.user_id where u.created_at >= '2026-01-01' and o.status = 'completed' group by u.id, u.email having sum(o.amount) > 500 order by revenue desc limit 50;";
     formatSql();
-};
+}
+window.onload = loadSampleSql;
 </script>
 
-<footer class="mt-20 border-t border-slate-800 bg-slate-950 py-12 px-6 text-center text-slate-500 text-sm">
-    <div class="max-w-4xl mx-auto space-y-4">
-        <div class="flex justify-center space-x-6">
-            <a href="json-to-ts.html" class="hover:text-slate-300">JSON to TS</a>
-            <a href="jwt-debugger.html" class="hover:text-slate-300">JWT Debugger</a>
-            <a href="cron-visualizer.html" class="hover:text-slate-300">Cron Visualizer</a>
-            <a href="sql-optimizer.html" class="hover:text-slate-300">SQL Optimizer</a>
-            <a href="regex-tester.html" class="hover:text-slate-300">RegEx Lab</a>
-        </div>
-        <p class="text-xs text-slate-600">Privacy First: 100% Client-Side computation. Your payloads and secrets never leave your browser.</p>
-        <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-400">
-            <span>Donations / Coffee (BSC/ETH/Polygon/Base):</span>
-            <code class="text-emerald-400 font-mono">0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE</code>
+<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
         </div>
     </div>
 </footer>
-<div id="toast" class="fixed bottom-6 right-6 bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg shadow-xl translate-y-20 opacity-0 transition duration-300 pointer-events-none text-sm z-50">
-    Copied to Clipboard!
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
 </div>
 <script>
-function copyWallet() {
-    navigator.clipboard.writeText('0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
-    showToast('Wallet address copied: 0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
-}
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
 function showToast(msg) {
     const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.classList.remove('translate-y-20', 'opacity-0');
-    setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
 }
 </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON to TypeScript - DevEngine Pro - DevEngine Pro</title>
+    <title>cURL to Multi-Lang Converter - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -56,30 +56,27 @@
 <main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
     <div class="mb-8">
         <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
-            <i class="fa-solid fa-code"></i><span>Type Inference Engine</span>
+            <i class="fa-solid fa-terminal"></i><span>API Code Generator</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">JSON to TypeScript Converter</h1>
-        <p class="text-slate-400 text-sm mt-1">Convert JSON payloads into clean, idiomatic TypeScript interfaces with nested object deduction.</p>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">cURL to Multi-Language API Converter</h1>
+        <p class="text-slate-400 text-sm mt-1">Instantly turn cURL terminal commands into production-ready client code for Python, JavaScript Fetch, Axios, and Go.</p>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">JSON Input</label>
-                <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample</button>
-            </div>
-            <textarea id="json-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste your JSON here..."></textarea>
+    <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">cURL Command</label>
+            <button onclick="loadSampleCurl()" class="text-xs text-emerald-400 hover:underline">Sample cURL</button>
         </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">TypeScript Interface</label>
-                <button onclick="copyText('ts-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Code</button>
-            </div>
-            <textarea id="ts-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Generated TypeScript output will appear here..."></textarea>
-        </div>
+        <textarea id="curl-input" oninput="convertCurl()" class="w-full h-36 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="curl -X POST https://api.example.com/v1/data -H 'Authorization: Bearer token' -d '{&quot;name&quot;: &quot;test&quot;}'"></textarea>
     </div>
-    <div class="mt-4 flex space-x-3">
-        <button onclick="convertToTs()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-bolt mr-2"></i>Generate TypeScript</button>
-        <button onclick="clearAll()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition">Clear</button>
+    <div class="flex space-x-2 mb-3 border-b border-slate-800 pb-2">
+        <button onclick="switchLang('js')" id="tab-js" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950">Fetch (JS)</button>
+        <button onclick="switchLang('py')" id="tab-py" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white">Python (Requests)</button>
+        <button onclick="switchLang('axios')" id="tab-axios" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white">Axios (Node.js)</button>
+        <button onclick="switchLang('go')" id="tab-go" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white">Go (net/http)</button>
+    </div>
+    <div class="relative">
+        <button onclick="copyText('code-output')" class="absolute top-3 right-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 z-10"><i class="fa-regular fa-copy mr-1"></i>Copy Code</button>
+        <textarea id="code-output" readonly class="w-full h-72 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none"></textarea>
     </div>
     <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
         <div class="flex items-center space-x-3">
@@ -90,70 +87,68 @@
     </div>
 </main>
 <script>
-function jsonToTs(obj, rootName = "RootObject") {
-    let interfaces = [];
-    function getType(value, key) {
-        if (value === null) return "any";
-        if (Array.isArray(value)) {
-            if (value.length === 0) return "any[]";
-            return getType(value[0], key) + "[]";
+let currentLang = 'js';
+function switchLang(lang) {
+    currentLang = lang;
+    ['js', 'py', 'axios', 'go'].forEach(l => {
+        const tab = document.getElementById('tab-' + l);
+        if (l === lang) {
+            tab.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950';
+        } else {
+            tab.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-400 hover:text-white';
         }
-        if (typeof value === "object") {
-            const childName = key.charAt(0).toUpperCase() + key.slice(1);
-            buildInterface(value, childName);
-            return childName;
+    });
+    convertCurl();
+}
+function parseCurl(cmd) {
+    let url = 'https://api.example.com';
+    let method = 'GET';
+    let headers = {};
+    let body = null;
+    
+    const urlMatch = cmd.match(/https?:\/\/[^\s'"]+/);
+    if (urlMatch) url = urlMatch[0];
+    
+    const methodMatch = cmd.match(/-X\s+([A-Z]+)/i);
+    if (methodMatch) method = methodMatch[1].toUpperCase();
+    
+    const hRegex = /-H\s+['"]([^'"]+)['"]/g;
+    let hMatch;
+    while ((hMatch = hRegex.exec(cmd)) !== null) {
+        const parts = hMatch[1].split(':');
+        if (parts.length >= 2) {
+            headers[parts[0].trim()] = parts.slice(1).join(':').trim();
         }
-        return typeof value;
     }
-    function buildInterface(data, name) {
-        let lines = [`export interface ${name} {`];
-        for (let k in data) {
-            const type = getType(data[k], k);
-            lines.push(`  ${k}: ${type};`);
-        }
-        lines.push("}");
-        interfaces.push(lines.join("\n"));
+    
+    const dMatch = cmd.match(/(--data|-d|--data-raw)\s+['"]([^'"]+)['"]/);
+    if (dMatch) {
+        body = dMatch[2];
+        if (!methodMatch) method = 'POST';
     }
-    buildInterface(obj, rootName);
-    return interfaces.reverse().join("\n\n");
+    return { url, method, headers, body };
 }
-function convertToTs() {
-    try {
-        const input = document.getElementById("json-input").value;
-        const parsed = JSON.parse(input);
-        document.getElementById("ts-output").value = jsonToTs(parsed);
-        showToast("TypeScript interfaces generated!");
-    } catch (e) {
-        alert("Invalid JSON format: " + e.message);
+function convertCurl() {
+    const cmd = document.getElementById('curl-input').value.trim();
+    if (!cmd) return;
+    const data = parseCurl(cmd);
+    let code = '';
+    if (currentLang === 'js') {
+        code = `const response = await fetch('${data.url}', {\n  method: '${data.method}',\n  headers: ${JSON.stringify(data.headers, null, 4)},\n  body: ${data.body ? JSON.stringify(data.body) : 'undefined'}\n});\nconst result = await response.json();\nconsole.log(result);`;
+    } else if (currentLang === 'py') {
+        code = `import requests\nimport json\n\nurl = '${data.url}'\nheaders = ${JSON.stringify(data.headers, null, 4)}\n${data.body ? `payload = '${data.body}'\n` : ""}response = requests.request('${data.method}', url, headers=headers${data.body ? ", data=payload" : ""})\nprint(response.json())`;
+    } else if (currentLang === 'axios') {
+        code = `const axios = require('axios');\n\nconst options = {\n  method: '${data.method}',\n  url: '${data.url}',\n  headers: ${JSON.stringify(data.headers, null, 4)},\n  data: ${data.body || 'undefined'}\n};\n\ntry {\n  const response = await axios.request(options);\n  console.log(response.data);\n} catch (error) {\n  console.error(error);\n}`;
+    } else if (currentLang === 'go') {
+        code = `package main\n\nimport (\n\t"fmt"\n\t"net/http"\n\t"io"\n)\n\nfunc main() {\n\tclient := &http.Client{}\n\treq, _ := http.NewRequest("${data.method}", "${data.url}", nil)\n\tresp, err := client.Do(req)\n\tif err != nil {\n\t\tpanic(err)\n\t}\n\tdefer resp.Body.Close()\n\tbody, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(body))\n}`;
     }
+    document.getElementById('code-output').value = code;
 }
-function loadSample() {
-    document.getElementById("json-input").value = JSON.stringify({
-        id: "usr_99182",
-        username: "alex_dev",
-        email: "alex@example.com",
-        isActive: true,
-        roles: ["admin", "developer"],
-        profile: {
-            avatarUrl: "https://avatar.dev/99182",
-            bio: "Building zero-capital Micro-SaaS tools",
-            social: {
-                github: "alexdev",
-                twitter: "@alex_tweets"
-            }
-        },
-        stats: {
-            loginCount: 42,
-            reputation: 98.5
-        }
-    }, null, 2);
-    convertToTs();
+function loadSampleCurl() {
+    document.getElementById('curl-input').value = "curl -X POST https://api.stripe.com/v1/payment_intents -H 'Authorization: Bearer sk_test_12345' -H 'Content-Type: application/json' -d '{\"amount\": 2000, \"currency\": \"usd\"}'";
+    convertCurl();
 }
-function clearAll() {
-    document.getElementById("json-input").value = "";
-    document.getElementById("ts-output").value = "";
-}
-window.onload = loadSample;
+window.onload = loadSampleCurl;
 </script>
 
 <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">

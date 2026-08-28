@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevEngine Pro - High Performance Developer Tools - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -26,130 +26,376 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        pre, code, textarea { font-family: 'JetBrains Mono', monospace; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
     </style>
-
-    <title>DevEngine | High-Performance Developer Micro Tools</title>
+    
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
-
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
 <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
     <div class="flex items-center space-x-3">
         <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
         <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
     </div>
-    <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-400">
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
         <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
-        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT Inspector</a>
-        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron Visualizer</a>
-        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL Optimizer</a>
-        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx Live</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 18 Tools &rarr;</a>
     </div>
     <div class="flex items-center space-x-3">
         <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
             <i class="fa-solid fa-wallet text-emerald-400"></i>
-            <span>Support Creator (EVM)</span>
+            <span>Tip Creator (EVM)</span>
         </button>
     </div>
 </nav>
-
-<main class="flex-1 max-w-6xl mx-auto px-6 py-16">
-    <div class="text-center space-y-4 max-w-3xl mx-auto mb-16">
-        <div class="inline-flex items-center space-x-2 bg-emerald-950/60 border border-emerald-800/80 rounded-full px-4 py-1.5 text-xs text-emerald-400 font-medium">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Zero Server Latency &middot; 100% Client-Side Sandbox</span>
+<main class="max-w-6xl mx-auto px-6 py-12 w-full flex-grow">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+        <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-4">
+            <span>⚡ 18 High-Performance Developer Utilities • 100% Offline & Private</span>
         </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white">Engineering Tools for the <span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">10x Developer</span></h1>
-        <p class="text-slate-400 text-lg">Instant, secure, zero-server web utilities built for developers. No analytics trackers, no data persistence, pure client-side power.</p>
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">Fast, Private & Free Tools for Developers</h1>
+        <p class="text-base text-slate-400 mt-4 leading-relaxed">No accounts, no paywalls, zero server latency. Everything executes right inside your browser with maximum speed and zero data telemetry.</p>
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400">
+            <span class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Zero Server Telemetry</span>
+            <span class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>WebCrypto Native Speed</span>
+            <span class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>18 Modular Micro-Apps</span>
+        </div>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="json-to-ts.html" class="p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-2xl transition duration-200 group flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl font-bold border border-blue-500/20 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-code"></i>
+        <a href="json-to-ts.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Type Generator</span>
                 </div>
-                <h2 class="text-xl font-bold text-white group-hover:text-emerald-400 transition">JSON to TypeScript</h2>
-                <p class="text-sm text-slate-400">Instantly generate deeply typed TypeScript interfaces and type declarations from raw JSON payloads.</p>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">JSON to TypeScript <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Convert raw JSON payloads into clean, strongly typed TypeScript interfaces with nested type deduction.</p>
             </div>
-            <span class="mt-6 text-xs text-emerald-400 font-semibold flex items-center space-x-1">Launch Tool <i class="fa-solid fa-arrow-right ml-1"></i></span>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
         </a>
-
-        <a href="jwt-debugger.html" class="p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-2xl transition duration-200 group flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl font-bold border border-amber-500/20 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-key"></i>
+<a href="jwt-debugger.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Security</span>
                 </div>
-                <h2 class="text-xl font-bold text-white group-hover:text-emerald-400 transition">JWT Inspector & Debugger</h2>
-                <p class="text-sm text-slate-400">Decode, parse headers/payloads, inspect expiration timestamps, and audit claims offline.</p>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">JWT Debugger & Inspector <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Decode, inspect, and verify JWT headers, claims, and expiry dates offline with zero server data leakage.</p>
             </div>
-            <span class="mt-6 text-xs text-emerald-400 font-semibold flex items-center space-x-1">Launch Tool <i class="fa-solid fa-arrow-right ml-1"></i></span>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
         </a>
-
-        <a href="cron-visualizer.html" class="p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-2xl transition duration-200 group flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl font-bold border border-purple-500/20 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-clock"></i>
+<a href="cron-visualizer.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">DevOps</span>
                 </div>
-                <h2 class="text-xl font-bold text-white group-hover:text-emerald-400 transition">Cron Syntax Visualizer</h2>
-                <p class="text-sm text-slate-400">Translates standard 5-part cron expressions into plain English with upcoming execution previews.</p>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Cron Schedule Visualizer <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Parse complex 5 or 6-part cron expressions into human-readable timetables and upcoming run sequences.</p>
             </div>
-            <span class="mt-6 text-xs text-emerald-400 font-semibold flex items-center space-x-1">Launch Tool <i class="fa-solid fa-arrow-right ml-1"></i></span>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
         </a>
-
-        <a href="sql-optimizer.html" class="p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-2xl transition duration-200 group flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl font-bold border border-emerald-500/20 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-database"></i>
+<a href="sql-optimizer.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Database</span>
                 </div>
-                <h2 class="text-xl font-bold text-white group-hover:text-emerald-400 transition">SQL Query Formatter</h2>
-                <p class="text-sm text-slate-400">Format, beautify, and inspect SQL queries with clean dialect syntax highlights.</p>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">SQL Formatter & Beautifier <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Clean, indent, uppercase SQL keywords, and format complex SELECT queries across PostgreSQL, MySQL, SQLite.</p>
             </div>
-            <span class="mt-6 text-xs text-emerald-400 font-semibold flex items-center space-x-1">Launch Tool <i class="fa-solid fa-arrow-right ml-1"></i></span>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
         </a>
-
-        <a href="regex-tester.html" class="p-6 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-2xl transition duration-200 group flex flex-col justify-between">
-            <div class="space-y-3">
-                <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-xl font-bold border border-pink-500/20 group-hover:scale-110 transition">
-                    <i class="fa-solid fa-asterisk"></i>
+<a href="regex-tester.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-vial"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Parser</span>
                 </div>
-                <h2 class="text-xl font-bold text-white group-hover:text-emerald-400 transition">RegEx Live Sandbox</h2>
-                <p class="text-sm text-slate-400">Test regular expressions against real text with dynamic group match highlighting.</p>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">RegEx Live Sandbox <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Interactive Regular Expression tester with match highlighting, capture group extraction, and live validation.</p>
             </div>
-            <span class="mt-6 text-xs text-emerald-400 font-semibold flex items-center space-x-1">Launch Tool <i class="fa-solid fa-arrow-right ml-1"></i></span>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
         </a>
+<a href="base64-codec.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Encoding</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Base64 & URL Multi-Codec <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Ultra-fast encode and decode for Base64 (Unicode safe), URL Encoding, Hex Strings, and HTML Entities.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="curl-converter.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-terminal"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">API Engine</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">cURL to Multi-Lang Converter <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Instant syntax translation from cURL commands to JavaScript Fetch, Python Requests, Axios, Go, and PHP.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="uuid-generator.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Generator</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">UUID / ULID / API Key Forge <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Batch generate cryptographically secure UUID v4, monotonic ULIDs, NanoIDs, and custom secret tokens.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="json-diff.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-code-compare"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Utility</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Semantic JSON Diff Viewer <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Compare two JSON objects key-by-key, highlighting additions, removals, and value modifications.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="markdown-table.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-table"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Content</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Markdown Table & CSV Studio <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Visual WYSIWYG spreadsheet editor to build, format, and convert Markdown tables to CSV, TSV, and JSON.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="css-shadow-glass.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Frontend</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">CSS Box-Shadow & Glassmorphism <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Visual multi-layer shadow builder and frosted glass backdrop CSS / Tailwind snippet generator.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="crypto-hash.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Cryptography</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Crypto Hash Generator <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">High-performance WebCrypto client-side hashing for SHA-256, SHA-512, SHA-1, MD5, and HMAC signatures.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="timestamp-converter.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-stopwatch"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Date & Time</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Timestamp & Timezone Converter <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Bidirectional Unix epoch milliseconds/seconds to ISO-8601, UTC, and global timezone dates.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="html-to-jsx.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-brands fa-react"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Frontend</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">HTML to React JSX & Tailwind <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Convert HTML templates to clean React JSX components, class to className, style objects, and self-closing tags.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="color-studio.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Design</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">Color Studio & WCAG Contrast <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Palette generator, HEX/RGB/HSL/OKLCH color conversion, and WCAG 2.1 AA/AAA accessibility contrast auditing.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="svg-optimizer.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-bezier-curve"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Graphics</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">SVG to React JSX & Data URI <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Minify raw SVG markup, strip unnecessary metadata, convert into React SVG components or CSS background URIs.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="yaml-json-converter.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-file-code"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Configuration</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">YAML / JSON / TOML Converter <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Real-time schema translation between YAML configs, Kubernetes manifests, JSON objects, and TOML tables.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+<a href="token-cost-calculator.html" class="group block p-6 bg-slate-900/90 border border-slate-800/80 rounded-2xl hover:border-emerald-500/50 hover:bg-slate-900 transition duration-200 relative overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition duration-200">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">AI Tools</span>
+                </div>
+                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition flex items-center">LLM Token & Cost Calculator <span class="ml-2 opacity-0 group-hover:opacity-100 transition text-emerald-400 text-sm">&rarr;</span></h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Estimate token usage and cost for GPT-4o, Claude 3.5 Sonnet, Gemini 2.0/3.7, DeepSeek V3 across context windows.</p>
+            </div>
+            <div class="mt-6 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+                <span>Client-Side Local</span>
+                <span class="text-emerald-500 font-semibold">Free & Open</span>
+            </div>
+        </a>
+    </div>
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
     </div>
 </main>
-
-<footer class="mt-20 border-t border-slate-800 bg-slate-950 py-12 px-6 text-center text-slate-500 text-sm">
-    <div class="max-w-4xl mx-auto space-y-4">
-        <div class="flex justify-center space-x-6">
-            <a href="json-to-ts.html" class="hover:text-slate-300">JSON to TS</a>
-            <a href="jwt-debugger.html" class="hover:text-slate-300">JWT Debugger</a>
-            <a href="cron-visualizer.html" class="hover:text-slate-300">Cron Visualizer</a>
-            <a href="sql-optimizer.html" class="hover:text-slate-300">SQL Optimizer</a>
-            <a href="regex-tester.html" class="hover:text-slate-300">RegEx Lab</a>
-        </div>
-        <p class="text-xs text-slate-600">Privacy First: 100% Client-Side computation. Your payloads and secrets never leave your browser.</p>
-        <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-800 rounded-full px-4 py-1.5 text-xs text-slate-400">
-            <span>Donations / Coffee (BSC/ETH/Polygon/Base):</span>
-            <code class="text-emerald-400 font-mono">0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE</code>
+<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
         </div>
     </div>
 </footer>
-<div id="toast" class="fixed bottom-6 right-6 bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-lg shadow-xl translate-y-20 opacity-0 transition duration-300 pointer-events-none text-sm z-50">
-    Copied to Clipboard!
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
 </div>
 <script>
-function copyWallet() {
-    navigator.clipboard.writeText('0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
-    showToast('Wallet address copied: 0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE');
-}
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
 function showToast(msg) {
     const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.classList.remove('translate-y-20', 'opacity-0');
-    setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
 }
 </script>
 </body>

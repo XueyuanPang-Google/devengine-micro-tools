@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Token & Cost Calculator - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 18 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>
+<main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
+    <div class="mb-8">
+        <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
+            <i class="fa-solid fa-calculator"></i><span>AI & LLM Economics</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">LLM Token & Cost Calculator</h1>
+        <p class="text-slate-400 text-sm mt-1">Estimate token counts, compare inference pricing across frontier LLM models (GPT-4o, Claude 3.5, Gemini 2.0/3.7, DeepSeek V3), and calculate batch budgets.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Text & Token Analyzer -->
+        <div class="lg:col-span-2 space-y-4">
+            <div class="flex flex-col space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Prompt / Payload Text</label>
+                    <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample Prompt</button>
+                </div>
+                <textarea id="token-input" oninput="recalc()" class="w-full h-64 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Type or paste your prompt here to estimate tokens..."></textarea>
+            </div>
+
+            <!-- Live Metrics -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400">Estimated Tokens</div>
+                    <div id="est-tokens" class="text-2xl font-black text-emerald-400 mt-1">0</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400">Character Count</div>
+                    <div id="est-chars" class="text-2xl font-black text-white mt-1">0</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400">Word Count</div>
+                    <div id="est-words" class="text-2xl font-black text-white mt-1">0</div>
+                </div>
+            </div>
+
+            <!-- Concurrency / Batch Multiplier -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                <div class="text-xs font-bold uppercase text-slate-300 mb-3 flex items-center">
+                    <i class="fa-solid fa-layer-group text-emerald-400 mr-2"></i>Batch / Concurrency Scaling Estimator
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400">Total API Calls / Requests</label>
+                        <input type="number" id="batch-runs" value="1000" min="1" oninput="recalc()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-white mt-1">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Expected Output Tokens per Request</label>
+                        <input type="number" id="out-tokens" value="500" min="1" oninput="recalc()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-white mt-1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Table Comparison -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center">
+                    <i class="fa-solid fa-coins text-emerald-400 mr-2"></i>Cost Comparison
+                </h3>
+                <div id="pricing-list" class="space-y-3"></div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-500">
+                Pricing based on 2026 official API standard rates per 1M tokens.
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</main>
+
+<script>
+const MODELS = [
+    { name: 'DeepSeek V3', inPrice: 0.14, outPrice: 0.28, tag: 'Ultra Low Cost', badge: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+    { name: 'Gemini 2.0 / 3.7 Flash', inPrice: 0.10, outPrice: 0.40, tag: 'High Concurrency', badge: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+    { name: 'GPT-4o Mini', inPrice: 0.15, outPrice: 0.60, tag: 'Fast', badge: 'bg-slate-800 text-slate-300 border-slate-700' },
+    { name: 'Claude 3.5 Sonnet', inPrice: 3.00, outPrice: 15.00, tag: 'Top Frontier', badge: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
+    { name: 'GPT-4o', inPrice: 2.50, outPrice: 10.00, tag: 'Flagship', badge: 'bg-slate-800 text-slate-300 border-slate-700' }
+];
+
+const SAMPLE = `You are a world-class senior distributed systems engineer.
+Please analyze the following PostgreSQL schema and produce optimized SQL indices, connection pooling recommendations, and JSONB partitioning strategies for 100M+ rows.
+Provide your response in valid Markdown with detailed query execution plan diagrams.`;
+
+function loadSample() {
+    document.getElementById('token-input').value = SAMPLE;
+    recalc();
+}
+
+function estimateTokens(text) {
+    if (!text) return 0;
+    let cjkCount = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    let asciiCount = text.length - cjkCount;
+    let tokenEstimate = Math.ceil((asciiCount / 3.8) + (cjkCount * 1.2));
+    return Math.max(1, tokenEstimate);
+}
+
+function recalc() {
+    const text = document.getElementById('token-input').value;
+    const chars = text.length;
+    const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
+    const inTokens = estimateTokens(text);
+
+    document.getElementById('est-tokens').innerText = inTokens.toLocaleString();
+    document.getElementById('est-chars').innerText = chars.toLocaleString();
+    document.getElementById('est-words').innerText = words.toLocaleString();
+
+    const batchRuns = parseInt(document.getElementById('batch-runs').value) || 1;
+    const outTokensPerRun = parseInt(document.getElementById('out-tokens').value) || 0;
+
+    const totalInTokens = inTokens * batchRuns;
+    const totalOutTokens = outTokensPerRun * batchRuns;
+
+    const list = document.getElementById('pricing-list');
+    list.innerHTML = '';
+
+    MODELS.forEach(m => {
+        const inCost = (totalInTokens / 1000000) * m.inPrice;
+        const outCost = (totalOutTokens / 1000000) * m.outPrice;
+        const totalCost = inCost + outCost;
+
+        const card = document.createElement('div');
+        card.className = 'bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex items-center justify-between';
+        card.innerHTML = `
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-bold text-white">` + m.name + `</span>
+                    <span class="text-[9px] px-2 py-0.5 rounded border font-semibold ` + m.badge + `">` + m.tag + `</span>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-1 font-mono">
+                    In: $` + m.inPrice + `/M • Out: $` + m.outPrice + `/M
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-sm font-black text-emerald-400 font-mono">$` + totalCost.toFixed(4) + `</div>
+                <div class="text-[10px] text-slate-500 font-mono">` + (totalInTokens + totalOutTokens).toLocaleString() + ` tok</div>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSample();
+});
+</script>
+
+<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

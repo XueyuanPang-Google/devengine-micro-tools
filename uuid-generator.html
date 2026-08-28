@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON to TypeScript - DevEngine Pro - DevEngine Pro</title>
+    <title>UUID / ULID / API Key Forge - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -56,30 +56,37 @@
 <main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
     <div class="mb-8">
         <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
-            <i class="fa-solid fa-code"></i><span>Type Inference Engine</span>
+            <i class="fa-solid fa-fingerprint"></i><span>Crypto Random Token Generator</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">JSON to TypeScript Converter</h1>
-        <p class="text-slate-400 text-sm mt-1">Convert JSON payloads into clean, idiomatic TypeScript interfaces with nested object deduction.</p>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">UUID, ULID & API Secret Token Forge</h1>
+        <p class="text-slate-400 text-sm mt-1">Batch generate cryptographically secure UUID v4, monotonic ULID IDs, NanoIDs, and hex secrets right inside your browser.</p>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">JSON Input</label>
-                <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample</button>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+                <label class="text-xs font-semibold text-slate-400 mb-1 block">Token Type</label>
+                <select id="token-type" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-emerald-300">
+                    <option value="uuid4">UUID v4 (Standard 36-char)</option>
+                    <option value="ulid">ULID (Time-sortable 26-char)</option>
+                    <option value="nanoid">NanoID (21-char compact)</option>
+                    <option value="apikey">API Key (sk_live_64hex)</option>
+                </select>
             </div>
-            <textarea id="json-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste your JSON here..."></textarea>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">TypeScript Interface</label>
-                <button onclick="copyText('ts-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Code</button>
+            <div>
+                <label class="text-xs font-semibold text-slate-400 mb-1 block">Quantity</label>
+                <input type="number" id="token-count" value="10" min="1" max="100" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-emerald-300">
             </div>
-            <textarea id="ts-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Generated TypeScript output will appear here..."></textarea>
+            <div class="flex items-end">
+                <button onclick="generateTokens()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition"><i class="fa-solid fa-arrows-rotate mr-1"></i>Generate Batch</button>
+            </div>
         </div>
     </div>
-    <div class="mt-4 flex space-x-3">
-        <button onclick="convertToTs()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-bolt mr-2"></i>Generate TypeScript</button>
-        <button onclick="clearAll()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition">Clear</button>
+    <div class="relative">
+        <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Generated IDs</label>
+            <button onclick="copyText('uuid-results')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy All</button>
+        </div>
+        <textarea id="uuid-results" readonly class="w-full h-80 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none"></textarea>
     </div>
     <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
         <div class="flex items-center space-x-3">
@@ -90,70 +97,51 @@
     </div>
 </main>
 <script>
-function jsonToTs(obj, rootName = "RootObject") {
-    let interfaces = [];
-    function getType(value, key) {
-        if (value === null) return "any";
-        if (Array.isArray(value)) {
-            if (value.length === 0) return "any[]";
-            return getType(value[0], key) + "[]";
-        }
-        if (typeof value === "object") {
-            const childName = key.charAt(0).toUpperCase() + key.slice(1);
-            buildInterface(value, childName);
-            return childName;
-        }
-        return typeof value;
+function genUUIDv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+function genNanoId(len = 21) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+    let res = '';
+    const values = crypto.getRandomValues(new Uint8Array(len));
+    for(let i=0; i<len; i++) {
+        res += chars[values[i] % chars.length];
     }
-    function buildInterface(data, name) {
-        let lines = [`export interface ${name} {`];
-        for (let k in data) {
-            const type = getType(data[k], k);
-            lines.push(`  ${k}: ${type};`);
-        }
-        lines.push("}");
-        interfaces.push(lines.join("\n"));
+    return res;
+}
+function genULID() {
+    const crockford = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    let time = Date.now();
+    let timeStr = "";
+    for (let i = 9; i >= 0; i--) {
+        timeStr = crockford[time % 32] + timeStr;
+        time = Math.floor(time / 32);
     }
-    buildInterface(obj, rootName);
-    return interfaces.reverse().join("\n\n");
+    let randStr = "";
+    const randVals = crypto.getRandomValues(new Uint8Array(16));
+    for(let i=0; i<16; i++) randStr += crockford[randVals[i] % 32];
+    return timeStr + randStr;
 }
-function convertToTs() {
-    try {
-        const input = document.getElementById("json-input").value;
-        const parsed = JSON.parse(input);
-        document.getElementById("ts-output").value = jsonToTs(parsed);
-        showToast("TypeScript interfaces generated!");
-    } catch (e) {
-        alert("Invalid JSON format: " + e.message);
+function genApiKey() {
+    const rand = crypto.getRandomValues(new Uint8Array(32));
+    return 'sk_live_' + Array.from(rand).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function generateTokens() {
+    const type = document.getElementById('token-type').value;
+    const count = parseInt(document.getElementById('token-count').value) || 10;
+    let list = [];
+    for(let i=0; i<count; i++) {
+        if (type === 'uuid4') list.push(genUUIDv4());
+        if (type === 'ulid') list.push(genULID());
+        if (type === 'nanoid') list.push(genNanoId());
+        if (type === 'apikey') list.push(genApiKey());
     }
+    document.getElementById('uuid-results').value = list.join('\n');
+    showToast('Generated ' + count + ' ' + type.toUpperCase() + ' tokens!');
 }
-function loadSample() {
-    document.getElementById("json-input").value = JSON.stringify({
-        id: "usr_99182",
-        username: "alex_dev",
-        email: "alex@example.com",
-        isActive: true,
-        roles: ["admin", "developer"],
-        profile: {
-            avatarUrl: "https://avatar.dev/99182",
-            bio: "Building zero-capital Micro-SaaS tools",
-            social: {
-                github: "alexdev",
-                twitter: "@alex_tweets"
-            }
-        },
-        stats: {
-            loginCount: 42,
-            reputation: 98.5
-        }
-    }, null, 2);
-    convertToTs();
-}
-function clearAll() {
-    document.getElementById("json-input").value = "";
-    document.getElementById("ts-output").value = "";
-}
-window.onload = loadSample;
+window.onload = generateTokens;
 </script>
 
 <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">

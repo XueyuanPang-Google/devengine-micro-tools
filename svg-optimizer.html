@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG to React JSX & Data URI - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 18 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>
+<main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
+    <div class="mb-8">
+        <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
+            <i class="fa-solid fa-bezier-curve"></i><span>Vector Pipeline</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">SVG to React JSX & Data URI Optimizer</h1>
+        <p class="text-slate-400 text-sm mt-1">Minify SVG markup, strip bloated XML headers/metadata, convert into React SVG components or CSS background Data URIs.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Raw SVG Input</label>
+                <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample</button>
+            </div>
+            <textarea id="svg-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste raw <svg>...</svg> XML here..."></textarea>
+        </div>
+        
+        <div class="flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+                <div class="flex space-x-2">
+                    <button id="tab-jsx" onclick="setMode('jsx')" class="text-xs px-3 py-1 bg-emerald-600 text-slate-950 font-bold rounded">React JSX</button>
+                    <button id="tab-min" onclick="setMode('min')" class="text-xs px-3 py-1 bg-slate-800 text-slate-400 font-semibold rounded hover:text-white">Minified SVG</button>
+                    <button id="tab-uri" onclick="setMode('uri')" class="text-xs px-3 py-1 bg-slate-800 text-slate-400 font-semibold rounded hover:text-white">Data URI (CSS)</button>
+                </div>
+                <button onclick="copyText('svg-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Output</button>
+            </div>
+            <textarea id="svg-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Optimized output will appear here..."></textarea>
+        </div>
+    </div>
+
+    <div class="mt-4 flex items-center justify-between">
+        <div class="flex space-x-3">
+            <button onclick="processSvg()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Optimize SVG</button>
+            <button onclick="clearAll()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition">Clear</button>
+        </div>
+        <div id="stats" class="text-xs text-slate-400 font-mono hidden">
+            Original: <span id="orig-size" class="text-white">0 B</span> &rarr; Minified: <span id="min-size" class="text-emerald-400">0 B</span> (<span id="saved-pct" class="text-emerald-400 font-bold">0%</span> saved)
+        </div>
+    </div>
+
+    <div class="mt-6 bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <div class="text-xs font-bold uppercase text-slate-400 mb-2">Live Render Preview</div>
+        <div id="svg-preview" class="h-24 bg-slate-950 border border-slate-800/80 rounded-lg flex items-center justify-center p-4">
+            <span class="text-xs text-slate-600 font-mono">No SVG loaded</span>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</main>
+
+<script>
+let currentMode = 'jsx';
+
+const SAMPLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Generator: Adobe Illustrator 25.0, SVG Export Plug-In -->
+  <path fill="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+</svg>`;
+
+function loadSample() {
+    document.getElementById('svg-input').value = SAMPLE_SVG;
+    processSvg();
+}
+
+function clearAll() {
+    document.getElementById('svg-input').value = '';
+    document.getElementById('svg-output').value = '';
+    document.getElementById('svg-preview').innerHTML = '<span class="text-xs text-slate-600 font-mono">No SVG loaded</span>';
+    document.getElementById('stats').classList.add('hidden');
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    ['jsx', 'min', 'uri'].forEach(m => {
+        const tab = document.getElementById('tab-' + m);
+        if (m === mode) {
+            tab.className = 'text-xs px-3 py-1 bg-emerald-600 text-slate-950 font-bold rounded';
+        } else {
+            tab.className = 'text-xs px-3 py-1 bg-slate-800 text-slate-400 font-semibold rounded hover:text-white';
+        }
+    });
+    processSvg();
+}
+
+function cleanSvg(raw) {
+    return raw
+        .replace(/<\\?xml.*?\\?>/gi, '')
+        .replace(/<!DOCTYPE.*?>/gi, '')
+        .replace(/<!--[\\s\\S]*?-->/g, '')
+        .replace(/xmlns:xlink="[^"]*"/gi, '')
+        .replace(/version="[^"]*"/gi, '')
+        .replace(/\\s+/g, ' ')
+        .trim();
+}
+
+function svgToJsx(svg) {
+    let jsx = cleanSvg(svg);
+    const attrs = [
+        ['stroke-width', 'strokeWidth'],
+        ['stroke-linecap', 'strokeLinecap'],
+        ['stroke-linejoin', 'strokeLinejoin'],
+        ['stroke-miterlimit', 'strokeMiterlimit'],
+        ['fill-rule', 'fillRule'],
+        ['clip-rule', 'clipRule'],
+        ['clip-path', 'clipPath'],
+        ['stop-color', 'stopColor'],
+        ['stop-opacity', 'stopOpacity'],
+        ['xmlns:xlink', 'xmlnsXlink'],
+        ['class=', 'className=']
+    ];
+    attrs.forEach(([k, c]) => {
+        jsx = jsx.split(k).join(c);
+    });
+
+    return "import React from 'react';\\n\\nexport const CustomIcon = (props: React.SVGProps<SVGSVGElement>) => (\\n  " +
+        jsx.replace('<svg', '<svg {...props}') +
+        "\\n);\\nexport default CustomIcon;";
+}
+
+function svgToDataUri(svg) {
+    const cleaned = cleanSvg(svg);
+    const encoded = encodeURIComponent(cleaned)
+        .replace(/'/g, "%27")
+        .replace(/"/g, "%22");
+    return 'background-image: url("data:image/svg+xml,' + encoded + '");';
+}
+
+function processSvg() {
+    const raw = document.getElementById('svg-input').value.trim();
+    if (!raw) return;
+
+    const cleaned = cleanSvg(raw);
+    let output = '';
+
+    if (currentMode === 'jsx') {
+        output = svgToJsx(raw);
+    } else if (currentMode === 'min') {
+        output = cleaned;
+    } else if (currentMode === 'uri') {
+        output = svgToDataUri(raw);
+    }
+
+    document.getElementById('svg-output').value = output;
+    document.getElementById('svg-preview').innerHTML = cleaned;
+
+    const origBytes = new Blob([raw]).size;
+    const minBytes = new Blob([cleaned]).size;
+    const saved = origBytes > 0 ? Math.max(0, Math.round((1 - minBytes / origBytes) * 100)) : 0;
+
+    document.getElementById('orig-size').innerText = origBytes + ' B';
+    document.getElementById('min-size').innerText = minBytes + ' B';
+    document.getElementById('saved-pct').innerText = saved + '%';
+    document.getElementById('stats').classList.remove('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSample();
+});
+</script>
+
+<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

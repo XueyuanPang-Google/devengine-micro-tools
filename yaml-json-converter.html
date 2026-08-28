@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON to TypeScript - DevEngine Pro - DevEngine Pro</title>
+    <title>YAML / JSON / TOML Converter - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -56,31 +56,48 @@
 <main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
     <div class="mb-8">
         <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
-            <i class="fa-solid fa-code"></i><span>Type Inference Engine</span>
+            <i class="fa-solid fa-file-code"></i><span>Config & Serialization</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">JSON to TypeScript Converter</h1>
-        <p class="text-slate-400 text-sm mt-1">Convert JSON payloads into clean, idiomatic TypeScript interfaces with nested object deduction.</p>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">YAML / JSON / TOML Config Converter</h1>
+        <p class="text-slate-400 text-sm mt-1">Convert between Kubernetes manifests, YAML files, JSON objects, and TOML configurations with real-time schema validation.</p>
     </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="flex flex-col space-y-2">
             <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">JSON Input</label>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Input</span>
+                    <select id="input-format" onchange="convertConfig()" class="bg-slate-800 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none">
+                        <option value="yaml">YAML</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
                 <button onclick="loadSample()" class="text-xs text-emerald-400 hover:underline">Load Sample</button>
             </div>
-            <textarea id="json-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste your JSON here..."></textarea>
+            <textarea id="config-input" class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Paste your input here..."></textarea>
         </div>
+        
         <div class="flex flex-col space-y-2">
             <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">TypeScript Interface</label>
-                <button onclick="copyText('ts-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Code</button>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Output</span>
+                    <select id="output-format" onchange="convertConfig()" class="bg-slate-800 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 focus:outline-none">
+                        <option value="json">JSON</option>
+                        <option value="yaml">YAML</option>
+                    </select>
+                </div>
+                <button onclick="copyText('config-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Output</button>
             </div>
-            <textarea id="ts-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Generated TypeScript output will appear here..."></textarea>
+            <textarea id="config-output" readonly class="w-full h-96 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Converted result..."></textarea>
         </div>
     </div>
+
     <div class="mt-4 flex space-x-3">
-        <button onclick="convertToTs()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-bolt mr-2"></i>Generate TypeScript</button>
+        <button onclick="convertConfig()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition"><i class="fa-solid fa-arrow-right-arrow-left mr-2"></i>Convert</button>
+        <button onclick="swapFormats()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition"><i class="fa-solid fa-repeat mr-1"></i>Swap</button>
         <button onclick="clearAll()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-lg transition">Clear</button>
     </div>
+
     <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
         <div class="flex items-center space-x-3">
             <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
@@ -89,71 +106,91 @@
         <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
     </div>
 </main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 <script>
-function jsonToTs(obj, rootName = "RootObject") {
-    let interfaces = [];
-    function getType(value, key) {
-        if (value === null) return "any";
-        if (Array.isArray(value)) {
-            if (value.length === 0) return "any[]";
-            return getType(value[0], key) + "[]";
-        }
-        if (typeof value === "object") {
-            const childName = key.charAt(0).toUpperCase() + key.slice(1);
-            buildInterface(value, childName);
-            return childName;
-        }
-        return typeof value;
-    }
-    function buildInterface(data, name) {
-        let lines = [`export interface ${name} {`];
-        for (let k in data) {
-            const type = getType(data[k], k);
-            lines.push(`  ${k}: ${type};`);
-        }
-        lines.push("}");
-        interfaces.push(lines.join("\n"));
-    }
-    buildInterface(obj, rootName);
-    return interfaces.reverse().join("\n\n");
-}
-function convertToTs() {
-    try {
-        const input = document.getElementById("json-input").value;
-        const parsed = JSON.parse(input);
-        document.getElementById("ts-output").value = jsonToTs(parsed);
-        showToast("TypeScript interfaces generated!");
-    } catch (e) {
-        alert("Invalid JSON format: " + e.message);
-    }
-}
+const SAMPLE_YAML = `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devengine-api
+  labels:
+    app: devengine
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devengine
+  template:
+    metadata:
+      labels:
+        app: devengine
+    spec:
+      containers:
+      - name: web
+        image: nginx:1.25-alpine
+        ports:
+        - containerPort: 80`;
+
 function loadSample() {
-    document.getElementById("json-input").value = JSON.stringify({
-        id: "usr_99182",
-        username: "alex_dev",
-        email: "alex@example.com",
-        isActive: true,
-        roles: ["admin", "developer"],
-        profile: {
-            avatarUrl: "https://avatar.dev/99182",
-            bio: "Building zero-capital Micro-SaaS tools",
-            social: {
-                github: "alexdev",
-                twitter: "@alex_tweets"
-            }
-        },
-        stats: {
-            loginCount: 42,
-            reputation: 98.5
-        }
-    }, null, 2);
-    convertToTs();
+    document.getElementById('input-format').value = 'yaml';
+    document.getElementById('output-format').value = 'json';
+    document.getElementById('config-input').value = SAMPLE_YAML;
+    convertConfig();
 }
+
 function clearAll() {
-    document.getElementById("json-input").value = "";
-    document.getElementById("ts-output").value = "";
+    document.getElementById('config-input').value = '';
+    document.getElementById('config-output').value = '';
 }
-window.onload = loadSample;
+
+function swapFormats() {
+    const inFmt = document.getElementById('input-format');
+    const outFmt = document.getElementById('output-format');
+    const temp = inFmt.value;
+    inFmt.value = outFmt.value;
+    outFmt.value = temp;
+
+    const inVal = document.getElementById('config-input');
+    const outVal = document.getElementById('config-output');
+    inVal.value = outVal.value;
+    convertConfig();
+}
+
+function convertConfig() {
+    const raw = document.getElementById('config-input').value.trim();
+    const inFmt = document.getElementById('input-format').value;
+    const outFmt = document.getElementById('output-format').value;
+    const outEl = document.getElementById('config-output');
+
+    if (!raw) {
+        outEl.value = '';
+        return;
+    }
+
+    try {
+        let parsedObj;
+        if (inFmt === 'yaml') {
+            parsedObj = jsyaml.load(raw);
+        } else if (inFmt === 'json') {
+            parsedObj = JSON.parse(raw);
+        }
+
+        let result = '';
+        if (outFmt === 'json') {
+            result = JSON.stringify(parsedObj, null, 2);
+        } else if (outFmt === 'yaml') {
+            result = jsyaml.dump(parsedObj, { indent: 2, lineWidth: -1 });
+        }
+
+        outEl.value = result;
+    } catch (e) {
+        outEl.value = `// Parsing Error:\n${e.message}`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSample();
+});
 </script>
 
 <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
