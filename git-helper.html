@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Workflow & Command Generator - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">\n<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 30 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>\n<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center space-x-3 mb-6">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <i class="fa-brands fa-git-alt text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-white">Git Workflow & Command Generator</h1>
+            <p class="text-xs text-slate-400">Visual cheat sheet, undo wizard, rebase helper, and complex git workflow command generator.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+            <h3 class="text-sm font-semibold text-white mb-2"><i class="fa-solid fa-wand-magic-sparkles text-emerald-400 mr-2"></i>I want to...</h3>
+            
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Category</label>
+                <select id="categorySelect" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200">
+                    <option value="undo">Undo / Fix Mistakes</option>
+                    <option value="branch">Branching & Merging</option>
+                    <option value="stash">Stashing & Cleaning</option>
+                    <option value="log">History & Diff Inspection</option>
+                    <option value="remote">Remote & Tags</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Scenario</label>
+                <select id="scenarioSelect" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200"></select>
+            </div>
+
+            <div id="customParams" class="space-y-3 pt-2 border-t border-slate-800">
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-white"><i class="fa-solid fa-terminal text-emerald-400 mr-2"></i>Generated Terminal Commands</h3>
+                    <button id="btnCopyGit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold flex items-center space-x-1.5">
+                        <i class="fa-regular fa-copy"></i><span>Copy Commands</span>
+                    </button>
+                </div>
+
+                <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-emerald-400 leading-relaxed overflow-x-auto whitespace-pre-wrap" id="gitOutput">
+                </div>
+
+                <div class="mt-4 p-4 bg-slate-950/70 border border-slate-800/80 rounded-xl text-xs text-slate-300 space-y-2" id="gitExplanation">
+                </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-3 gap-3 text-center text-[11px] text-slate-400">
+                <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
+                    <strong class="text-slate-200 block mb-0.5">Safe Revert</strong>
+                    <span>Creates non-destructive inverse commit</span>
+                </div>
+                <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
+                    <strong class="text-amber-400 block mb-0.5">Hard Reset</strong>
+                    <span>Discards uncommitted local changes</span>
+                </div>
+                <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-lg">
+                    <strong class="text-sky-400 block mb-0.5">Interactive Rebase</strong>
+                    <span>Squash, edit & rewrite branch log</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</div>
+
+<script>
+const SCENARIOS = {
+    undo: [
+        { id: 'undo-last-commit', name: 'Undo last commit but keep changes staged', cmd: 'git reset --soft HEAD~1', desc: 'Rolls back the last commit while keeping all your modified code indexed and staged for a new commit.' },
+        { id: 'undo-last-commit-hard', name: 'Completely discard last commit and changes', cmd: 'git reset --hard HEAD~1', desc: '⚠️ Warning: Irreversibly deletes the latest commit and all uncommitted code modifications in your working tree.' },
+        { id: 'amend-message', name: 'Change message of the last commit', cmd: 'git commit --amend -m "Your updated commit message"', desc: 'Replaces the previous commit message without creating a new duplicate commit node.' },
+        { id: 'discard-single-file', name: 'Discard unstaged changes in a specific file', cmd: 'git restore <file_path>', desc: 'Restores the specific file back to its state in HEAD.' },
+        { id: 'revert-pushed-commit', name: 'Safely revert a commit already pushed to remote', cmd: 'git revert <commit_hash>\ngit push origin main', desc: 'Creates a brand new commit that inverts all changes from the target commit, preserving public branch history integrity.' }
+    ],
+    branch: [
+        { id: 'create-switch', name: 'Create and switch to a new branch', cmd: 'git checkout -b feature/new-feature\n# Or using modern git:\ngit switch -c feature/new-feature', desc: 'Creates a brand new branch pointing to current HEAD and switches your working directory immediately.' },
+        { id: 'rename-branch', name: 'Rename current local branch', cmd: 'git branch -m new-branch-name', desc: 'Renames the branch you currently have checked out.' },
+        { id: 'delete-merged', name: 'Delete all local branches already merged into main', cmd: 'git branch --merged main | grep -v "\\*\\|main\\|master" | xargs -n 1 git branch -d', desc: 'Cleans up clutter by safely deleting branches whose changes are already integrated into main.' },
+        { id: 'squash-merge', name: 'Squash entire feature branch into single clean commit', cmd: 'git checkout main\ngit merge --squash feature/my-feature\ngit commit -m "feat: complete my feature (squashed)"', desc: 'Condenses multi-commit feature iterations into one cohesive atomic commit on the main branch.' }
+    ],
+    stash: [
+        { id: 'stash-save', name: 'Stash all tracked and untracked files with a note', cmd: 'git stash -u -m "WIP: half-finished task"', desc: 'Saves your dirty working tree (including new untracked files) to the stash stack and resets workspace to clean HEAD.' },
+        { id: 'stash-pop', name: 'Apply latest stash and remove from list', cmd: 'git stash pop', desc: 'Re-applies the most recent stash onto current branch and removes it from the stash stack.' },
+        { id: 'stash-view', name: 'Inspect diff in the latest stash without applying', cmd: 'git stash show -p stash@{0}', desc: 'Shows the full unified code diff contained inside the stash entry.' }
+    ],
+    log: [
+        { id: 'graph-log', name: 'Compact beautiful branch history tree', cmd: 'git log --graph --oneline --decorate --all', desc: 'Visual ASCII graph of all branches, merges, tags, and commits in chronological order.' },
+        { id: 'find-commits-file', name: 'View commit history that touched a specific file', cmd: 'git log --follow -p -- <file_path>', desc: 'Tracks commits modifying this file across past file renames and structural moves.' }
+    ],
+    remote: [
+        { id: 'sync-fork', name: 'Sync a forked repository with upstream master', cmd: 'git fetch upstream\ngit checkout main\ngit merge upstream/main\ngit push origin main', desc: 'Pulls the newest changes from the original source repo into your local fork and syncs it with your GitHub remote.' },
+        { id: 'delete-remote-branch', name: 'Delete a branch from remote GitHub server', cmd: 'git push origin --delete branch-name', desc: 'Removes the branch reference on the remote repository.' }
+    ]
+};
+
+const catSelect = document.getElementById('categorySelect');
+const scenSelect = document.getElementById('scenarioSelect');
+const gitOutput = document.getElementById('gitOutput');
+const gitExplanation = document.getElementById('gitExplanation');
+
+function updateScenarios() {
+    let cat = catSelect.value;
+    scenSelect.innerHTML = '';
+    SCENARIOS[cat].forEach(s => {
+        let opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.name;
+        scenSelect.appendChild(opt);
+    });
+    updateDetails();
+}
+
+function updateDetails() {
+    let cat = catSelect.value;
+    let id = scenSelect.value;
+    let item = SCENARIOS[cat].find(s => s.id === id);
+    if (!item) return;
+    gitOutput.textContent = item.cmd;
+    gitExplanation.innerHTML = `<strong>Explanation:</strong> ${item.desc}`;
+}
+
+catSelect.addEventListener('change', updateScenarios);
+scenSelect.addEventListener('change', updateDetails);
+document.getElementById('btnCopyGit').addEventListener('click', () => {
+    navigator.clipboard.writeText(gitOutput.textContent);
+    alert('Git commands copied to clipboard!');
+});
+
+updateScenarios();
+</script>\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

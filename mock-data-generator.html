@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Synthetic Data & JSON Generator - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">\n<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 30 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>\n<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center space-x-3 mb-6">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <i class="fa-solid fa-cubes-stacked text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-white">Mock Synthetic Data & JSON Generator</h1>
+            <p class="text-xs text-slate-400">Generate realistic dummy user records, e-commerce orders, crypto transactions, and REST entities instantly.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+            <h3 class="text-sm font-semibold text-white mb-2"><i class="fa-solid fa-sliders text-emerald-400 mr-2"></i>Schema Preset & Count</h3>
+            
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Entity Preset</label>
+                <select id="presetSelect" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200">
+                    <option value="users">Users & Auth Profiles</option>
+                    <option value="products">E-Commerce Products</option>
+                    <option value="crypto">Web3 Wallet Transactions</option>
+                    <option value="posts">Social Feed & Blog Posts</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Record Count (1 - 100)</label>
+                <input type="number" id="recordCount" value="10" min="1" max="100" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200">
+            </div>
+
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Output Format</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center space-x-2 p-2 bg-slate-950 border border-slate-800 rounded text-xs text-slate-300 cursor-pointer">
+                        <input type="radio" name="fmt" value="json" checked class="text-emerald-500">
+                        <span>JSON Array</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2 bg-slate-950 border border-slate-800 rounded text-xs text-slate-300 cursor-pointer">
+                        <input type="radio" name="fmt" value="sql" class="text-emerald-500">
+                        <span>SQL Inserts</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="btnGenerateMock" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-emerald-900/30">
+                <i class="fa-solid fa-bolt mr-1.5"></i>Generate Mock Dataset
+            </button>
+        </div>
+
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-semibold text-slate-300">Generated Mock Dataset</span>
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-800 rounded text-emerald-400 font-mono" id="dataStats">10 records</span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="btnCopyMock" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium">Copy</button>
+                        <button id="btnDownloadMock" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">Download</button>
+                    </div>
+                </div>
+                <textarea id="mockOutput" class="w-full h-96 p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-xs focus:outline-none focus:border-emerald-500/50 resize-none"></textarea>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                <span>100% Synthetic Mock Data</span>
+                <span>Randomized UUIDs & Realistic Hashes</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</div>
+
+<script>
+const FIRST_NAMES = ['Alex', 'Sarah', 'David', 'Elena', 'Michael', 'Emma', 'James', 'Olivia', 'Ethan', 'Sophia', 'Liam', 'Mia'];
+const LAST_NAMES = ['Chen', 'Smith', 'Nakamoto', 'Taylor', 'Johnson', 'Williams', 'Brown', 'Garcia', 'Miller', 'Davis', 'Rodriguez'];
+const DOMAINS = ['gmail.com', 'outlook.com', 'devengine.io', 'techcorp.com', 'proton.me'];
+const PRODUCTS = ['Mechanical Keyboard RGB', 'Ultra-Wide OLED Monitor 34"', 'Noise-Canceling Wireless Headset', 'Ergonomic Desk Mat', 'USB-C GaN 140W Charger', 'Smart Standing Desk'];
+
+function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function getRandomHex(len) { return Array.from({length: len}, () => Math.floor(Math.random()*16).toString(16)).join(''); }
+
+function generateDataset() {
+    let preset = document.getElementById('presetSelect').value;
+    let count = parseInt(document.getElementById('recordCount').value, 10) || 10;
+    count = Math.min(Math.max(count, 1), 100);
+    
+    let fmt = document.querySelector('input[name="fmt"]:checked').value;
+    let records = [];
+
+    for (let i = 1; i <= count; i++) {
+        if (preset === 'users') {
+            let fn = getRandomItem(FIRST_NAMES);
+            let ln = getRandomItem(LAST_NAMES);
+            records.push({
+                id: crypto.randomUUID(),
+                firstName: fn,
+                lastName: ln,
+                email: `${fn.toLowerCase()}.${ln.toLowerCase()}@${getRandomItem(DOMAINS)}`,
+                role: getRandomItem(['admin', 'developer', 'viewer', 'editor']),
+                status: getRandomItem(['active', 'pending', 'suspended']),
+                createdAt: new Date(Date.now() - getRandomInt(0, 10000000000)).toISOString()
+            });
+        } else if (preset === 'products') {
+            records.push({
+                sku: `SKU-${getRandomHex(6).toUpperCase()}`,
+                title: getRandomItem(PRODUCTS),
+                priceUSD: (getRandomInt(1900, 129900) / 100).toFixed(2),
+                stock: getRandomInt(0, 450),
+                rating: (3.5 + Math.random() * 1.5).toFixed(1),
+                inStock: Math.random() > 0.15
+            });
+        } else if (preset === 'crypto') {
+            records.push({
+                txHash: `0x${getRandomHex(64)}`,
+                from: `0x${getRandomHex(40)}`,
+                to: `0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE`,
+                chain: getRandomItem(['BSC', 'Arbitrum', 'Polygon', 'Base', 'Ethereum']),
+                amountUSDT: (getRandomInt(100, 50000) / 100).toFixed(2),
+                blockNumber: getRandomInt(38000000, 42000000),
+                confirmed: true
+            });
+        } else if (preset === 'posts') {
+            records.push({
+                id: i,
+                slug: `post-high-performance-${getRandomHex(4)}`,
+                title: `Scalable Micro-SaaS Architectures in 2026 #${i}`,
+                author: `${getRandomItem(FIRST_NAMES)} ${getRandomItem(LAST_NAMES)}`,
+                views: getRandomInt(120, 45000),
+                likes: getRandomInt(10, 1500),
+                published: true
+            });
+        }
+    }
+
+    let outputArea = document.getElementById('mockOutput');
+    if (fmt === 'json') {
+        outputArea.value = JSON.stringify(records, null, 2);
+    } else {
+        if (records.length === 0) return;
+        let keys = Object.keys(records[0]);
+        let tableName = preset;
+        let sql = records.map(r => {
+            let vals = keys.map(k => typeof r[k] === 'string' ? `'${r[k].replace(/'/g, "''")}'` : r[k]);
+            return `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${vals.join(', ')});`;
+        }).join('\n');
+        outputArea.value = sql;
+    }
+    
+    document.getElementById('dataStats').textContent = `${count} records (${fmt.toUpperCase()})`;
+}
+
+document.getElementById('btnGenerateMock').addEventListener('click', generateDataset);
+document.getElementById('presetSelect').addEventListener('change', generateDataset);
+document.querySelectorAll('input[name="fmt"]').forEach(r => r.addEventListener('change', generateDataset));
+
+document.getElementById('btnCopyMock').addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('mockOutput').value);
+    alert('Mock data copied to clipboard!');
+});
+
+document.getElementById('btnDownloadMock').addEventListener('click', () => {
+    let fmt = document.querySelector('input[name="fmt"]:checked').value;
+    let blob = new Blob([document.getElementById('mockOutput').value], {type: fmt === 'json' ? 'application/json' : 'text/plain'});
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `mock_data.${fmt === 'json' ? 'json' : 'sql'}`;
+    a.click();
+});
+
+generateDataset();
+</script>\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

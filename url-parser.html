@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Parser & Query Builder - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">\n<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 30 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>\n<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center space-x-3 mb-6">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <i class="fa-solid fa-link text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-white">URL Parser & Query String Builder</h1>
+            <p class="text-xs text-slate-400">Deconstruct URLs into protocol, host, port, path, and interactive query parameters table with live serialization.</p>
+        </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
+        <label class="block text-xs font-semibold text-slate-300 mb-2">Input Full URL</label>
+        <div class="flex space-x-2">
+            <input type="text" id="rawUrl" class="flex-grow p-3 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-sm focus:outline-none focus:border-emerald-500/50" value="https://api.github.com:443/repos/octocat/Hello-World/issues?state=open&sort=created&direction=desc#results" />
+            <button id="btnParse" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold"><i class="fa-solid fa-play mr-1"></i> Parse URL</button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <h3 class="text-sm font-semibold text-white mb-4"><i class="fa-solid fa-diagram-project text-emerald-400 mr-2"></i>URL Components</h3>
+            <div class="space-y-3 font-mono text-xs" id="compContainer">
+                <div class="flex justify-between py-2 border-b border-slate-800"><span class="text-slate-400">Protocol:</span><span id="uProto" class="text-emerald-400 font-semibold">https:</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-800"><span class="text-slate-400">Hostname:</span><span id="uHost" class="text-slate-200">api.github.com</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-800"><span class="text-slate-400">Port:</span><span id="uPort" class="text-slate-200">443</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-800"><span class="text-slate-400">Pathname:</span><span id="uPath" class="text-slate-200">/repos/octocat/Hello-World/issues</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-800"><span class="text-slate-400">Hash / Anchor:</span><span id="uHash" class="text-slate-200">#results</span></div>
+                <div class="flex justify-between py-2"><span class="text-slate-400">Origin:</span><span id="uOrigin" class="text-slate-200">https://api.github.com:443</span></div>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold text-white"><i class="fa-solid fa-list-check text-emerald-400 mr-2"></i>Query Parameters</h3>
+                <button id="btnAddParam" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded text-xs"><i class="fa-solid fa-plus mr-1"></i>Add Param</button>
+            </div>
+            <div class="flex-grow overflow-y-auto max-h-[350px] space-y-2 pr-1" id="paramsList">
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between">
+                <button id="btnCopyJson" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs"><i class="fa-solid fa-code mr-1"></i>Copy as JSON</button>
+                <button id="btnRebuild" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold"><i class="fa-solid fa-rotate mr-1"></i>Rebuild & Copy URL</button>
+            </div>
+        </div>
+    </div>
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</div>
+<script>
+const rawInput = document.getElementById('rawUrl');
+const paramsList = document.getElementById('paramsList');
+
+function parseUrl() {
+    try {
+        const u = new URL(rawInput.value.trim());
+        document.getElementById('uProto').textContent = u.protocol;
+        document.getElementById('uHost').textContent = u.hostname;
+        document.getElementById('uPort').textContent = u.port || '(default)';
+        document.getElementById('uPath').textContent = u.pathname;
+        document.getElementById('uHash').textContent = u.hash || '(none)';
+        document.getElementById('uOrigin').textContent = u.origin;
+
+        paramsList.innerHTML = '';
+        u.searchParams.forEach((v, k) => {
+            addParamRow(k, v);
+        });
+    } catch (e) {
+        alert('Invalid URL: ' + e.message);
+    }
+}
+
+function addParamRow(key = '', val = '') {
+    const div = document.createElement('div');
+    div.className = 'flex space-x-2 items-center';
+    div.innerHTML = `
+        <input type="text" class="w-1/2 p-2 bg-slate-950 border border-slate-800 rounded text-xs text-slate-200 font-mono pKey" value="${key}" placeholder="key" />
+        <input type="text" class="w-1/2 p-2 bg-slate-950 border border-slate-800 rounded text-xs text-slate-200 font-mono pVal" value="${val}" placeholder="value" />
+        <button class="p-2 text-rose-400 hover:text-rose-300 remove-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+    `;
+    paramsList.appendChild(div);
+}
+
+document.getElementById('btnParse').addEventListener('click', parseUrl);
+document.getElementById('btnAddParam').addEventListener('click', () => addParamRow('', ''));
+
+document.getElementById('btnRebuild').addEventListener('click', () => {
+    try {
+        const u = new URL(rawInput.value.trim());
+        const sp = new URLSearchParams();
+        const keys = paramsList.querySelectorAll('.pKey');
+        const vals = paramsList.querySelectorAll('.pVal');
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i].value.trim()) {
+                sp.append(keys[i].value.trim(), vals[i].value.trim());
+            }
+        }
+        u.search = sp.toString();
+        rawInput.value = u.toString();
+        navigator.clipboard.writeText(u.toString());
+        alert('Rebuilt URL copied to clipboard!');
+    } catch(e) {
+        alert(e.message);
+    }
+});
+
+document.getElementById('btnCopyJson').addEventListener('click', () => {
+    const obj = {};
+    const keys = paramsList.querySelectorAll('.pKey');
+    const vals = paramsList.querySelectorAll('.pVal');
+    for (let i = 0; i < keys.length; i++) {
+        if (keys[i].value.trim()) {
+            obj[keys[i].value.trim()] = vals[i].value.trim();
+        }
+    }
+    navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
+    alert('JSON copied to clipboard!');
+});
+
+parseUrl();
+</script>\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

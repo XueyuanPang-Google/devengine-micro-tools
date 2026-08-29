@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 & URL Multi-Codec - DevEngine Pro - DevEngine Pro</title>
+    <title>CSV ↔ JSON Bidirectional Transformer - DevEngine Pro - DevEngine Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -51,37 +51,40 @@
             <span>Tip Creator (EVM)</span>
         </button>
     </div>
-</nav>\n<main class="max-w-6xl mx-auto px-6 py-10 w-full flex-grow">
-    <div class="mb-8">
-        <div class="inline-flex items-center space-x-2 text-xs font-semibold px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full mb-3">
-            <i class="fa-solid fa-arrow-right-arrow-left"></i><span>Unicode-Safe Multi-Codec</span>
+</nav>\n<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center space-x-3 mb-6">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <i class="fa-solid fa-file-csv text-2xl"></i>
         </div>
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">Base64, URL & Hex Multi-Codec</h1>
-        <p class="text-slate-400 text-sm mt-1">Encode and decode text across Base64, URL URI components, Hexadecimal strings, and HTML entities.</p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Input Text / Payload</label>
-                <button onclick="document.getElementById('codec-input').value='Hello, DevEngine 2026! 🚀 跨境出海 & High Concurrency'; handleEncode('b64');" class="text-xs text-emerald-400 hover:underline">Sample UTF-8</button>
-            </div>
-            <textarea id="codec-input" class="w-full h-80 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-emerald-300 focus:outline-none focus:border-emerald-500" placeholder="Type or paste input here..."></textarea>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-                <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Result Output</label>
-                <button onclick="copyText('codec-output')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded border border-slate-700"><i class="fa-regular fa-copy mr-1"></i>Copy Result</button>
-            </div>
-            <textarea id="codec-output" readonly class="w-full h-80 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none" placeholder="Encoded / Decoded result will appear here..."></textarea>
+        <div>
+            <h1 class="text-2xl font-bold text-white">CSV &harr; JSON Bidirectional Transformer</h1>
+            <p class="text-xs text-slate-400">High performance parser converting CSV/TSV spreadsheets to structured JSON arrays and JSON objects back to RFC-4180 CSV.</p>
         </div>
     </div>
-    <div class="mt-6 flex flex-wrap gap-3">
-        <button onclick="handleEncode('b64')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition">Base64 Encode</button>
-        <button onclick="handleDecode('b64')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-900 font-bold text-xs rounded-lg transition">Base64 Decode</button>
-        <button onclick="handleEncode('url')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition">URL Encode</button>
-        <button onclick="handleDecode('url')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-900 font-bold text-xs rounded-lg transition">URL Decode</button>
-        <button onclick="handleEncode('hex')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition">Hex Encode</button>
-        <button onclick="handleDecode('hex')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-900 font-bold text-xs rounded-lg transition">Hex Decode</button>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col h-[550px]">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold text-slate-300">Input (CSV or JSON)</span>
+                <div class="flex space-x-2">
+                    <button id="btnSampleCsv" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">CSV Sample</button>
+                    <button id="btnSampleJson" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">JSON Sample</button>
+                </div>
+            </div>
+            <textarea id="dataInput" class="w-full flex-grow p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-xs focus:outline-none focus:border-emerald-500/50 resize-none"></textarea>
+            <div class="mt-4 flex space-x-3">
+                <button id="btnCsvToJson" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold"><i class="fa-solid fa-arrow-right mr-1"></i> Convert CSV &rarr; JSON</button>
+                <button id="btnJsonToCsv" class="flex-1 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-semibold"><i class="fa-solid fa-arrow-right mr-1"></i> Convert JSON &rarr; CSV</button>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col h-[550px]">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold text-slate-300">Transformed Output</span>
+                <button id="btnCopyOutput" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+            </div>
+            <textarea id="dataOutput" readonly class="w-full flex-grow p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-xs focus:outline-none resize-none"></textarea>
+        </div>
     </div>
     <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
         <div class="flex items-center space-x-3">
@@ -90,55 +93,73 @@
         </div>
         <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
     </div>
-</main>
+</div>
 <script>
-function utf8_to_b64(str) {
-    return window.btoa(unescape(encodeURIComponent(str)));
-}
-function b64_to_utf8(str) {
-    return decodeURIComponent(escape(window.atob(str)));
-}
-function strToHex(str) {
-    let hex = '';
-    for(let i=0;i<str.length;i++) {
-        hex += ''+str.charCodeAt(i).toString(16).padStart(2, '0');
-    }
-    return hex;
-}
-function hexToStr(hex) {
-    let str = '';
-    hex = hex.replace(/\s+/g, '');
-    for (let i = 0; i < hex.length; i += 2) {
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    }
-    return str;
-}
-function handleEncode(mode) {
-    const val = document.getElementById('codec-input').value;
-    const out = document.getElementById('codec-output');
+const input = document.getElementById('dataInput');
+const output = document.getElementById('dataOutput');
+
+document.getElementById('btnSampleCsv').addEventListener('click', () => {
+    input.value = 'id,name,role,email,status\n1,Alice,Engineer,alice@example.com,active\n2,Bob,Product Manager,bob@example.com,active\n3,Charlie,Security Auditor,charlie@example.com,pending';
+});
+
+document.getElementById('btnSampleJson').addEventListener('click', () => {
+    input.value = JSON.stringify([
+        {"id": 1, "name": "Alice", "role": "Engineer", "email": "alice@example.com"},
+        {"id": 2, "name": "Bob", "role": "Product Manager", "email": "bob@example.com"}
+    ], null, 2);
+});
+
+document.getElementById('btnCsvToJson').addEventListener('click', () => {
     try {
-        if (mode === 'b64') out.value = utf8_to_b64(val);
-        if (mode === 'url') out.value = encodeURIComponent(val);
-        if (mode === 'hex') out.value = strToHex(val);
-        showToast('Encoded successfully!');
+        const lines = input.value.trim().split(/\r?\n/);
+        if (lines.length < 2) throw new Error("CSV requires at least header and 1 row");
+        const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+        const result = [];
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+            const obj = {};
+            headers.forEach((h, idx) => {
+                obj[h] = values[idx] !== undefined ? values[idx] : "";
+            });
+            result.push(obj);
+        }
+        output.value = JSON.stringify(result, null, 2);
     } catch(e) {
-        alert('Encoding error: ' + e.message);
+        output.value = "Error parsing CSV: " + e.message;
     }
-}
-function handleDecode(mode) {
-    const val = document.getElementById('codec-input').value.trim();
-    const out = document.getElementById('codec-output');
+});
+
+document.getElementById('btnJsonToCsv').addEventListener('click', () => {
     try {
-        if (mode === 'b64') out.value = b64_to_utf8(val);
-        if (mode === 'url') out.value = decodeURIComponent(val);
-        if (mode === 'hex') out.value = hexToStr(val);
-        showToast('Decoded successfully!');
+        const arr = JSON.parse(input.value.trim());
+        if (!Array.isArray(arr) || arr.length === 0) throw new Error("JSON must be a non-empty array of objects");
+        const headers = Object.keys(arr[0]);
+        const rows = [headers.join(',')];
+        for (const item of arr) {
+            const vals = headers.map(h => {
+                let v = item[h] !== undefined ? String(item[h]) : '';
+                if (v.includes(',') || v.includes('"') || v.includes('\n')) {
+                    v = '"' + v.replace(/"/g, '""') + '"';
+                }
+                return v;
+            });
+            rows.push(vals.join(','));
+        }
+        output.value = rows.join('\n');
     } catch(e) {
-        alert('Decoding error: ' + e.message);
+        output.value = "Error parsing JSON: " + e.message;
     }
-}
-</script>
-\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+});
+
+document.getElementById('btnCopyOutput').addEventListener('click', () => {
+    navigator.clipboard.writeText(output.value);
+    alert('Copied to clipboard!');
+});
+
+document.getElementById('btnSampleCsv').click();
+document.getElementById('btnCsvToJson').click();
+</script>\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
         <div class="flex items-center space-x-4">

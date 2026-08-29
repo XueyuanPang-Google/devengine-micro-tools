@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Run to Compose YAML - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">\n<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 30 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>\n<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center space-x-3 mb-6">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <i class="fa-brands fa-docker text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-white">Docker Run to Compose YAML Converter</h1>
+            <p class="text-xs text-slate-400">Convert messy <code>docker run</code> CLI commands into clean, declarative <code>docker-compose.yml</code> configurations.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-white"><i class="fa-solid fa-terminal text-emerald-400 mr-2"></i>Docker Run Command</h3>
+                <button id="btnSampleDocker" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">Sample Command</button>
+            </div>
+            <textarea id="dockerInput" class="w-full h-64 p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-xs focus:outline-none focus:border-emerald-500/50 resize-none" placeholder="docker run -d --name my-redis -p 6379:6379 -v /data/redis:/data -e REDIS_PASSWORD=secret --restart always redis:7-alpine"></textarea>
+            <button id="btnConvertDocker" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-lg shadow-emerald-900/30">
+                <i class="fa-solid fa-arrow-right-arrow-left mr-1.5"></i>Convert to Docker Compose
+            </button>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-white">docker-compose.yml (v3.8)</span>
+                    <div class="flex space-x-2">
+                        <button id="btnCopyDocker" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium">Copy YAML</button>
+                        <button id="btnDownloadDocker" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">Download</button>
+                    </div>
+                </div>
+                <textarea id="dockerOutput" class="w-full h-72 p-4 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 font-mono text-xs focus:outline-none focus:border-emerald-500/50 resize-none"></textarea>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 flex justify-between">
+                <span>Supports Ports, Volumes, Env, Restart & Networks</span>
+                <span class="text-emerald-500">100% Offline Converter</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</div>
+
+<script>
+function parseDockerRun(cmd) {
+    let clean = cmd.trim().replace(/^docker\s+run\s+/, '').replace(/\\\n/g, ' ');
+    let tokens = clean.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) || [];
+    
+    let serviceName = "app";
+    let image = "nginx:latest";
+    let ports = [];
+    let volumes = [];
+    let environment = [];
+    let restart = null;
+    let containerName = null;
+
+    for (let i = 0; i < tokens.length; i++) {
+        let t = tokens[i].replace(/^['"]|['"]$/g, '');
+        if (t === '-p' || t === '--publish') {
+            ports.push(tokens[++i].replace(/^['"]|['"]$/g, ''));
+        } else if (t === '-v' || t === '--volume') {
+            volumes.push(tokens[++i].replace(/^['"]|['"]$/g, ''));
+        } else if (t === '-e' || t === '--env') {
+            environment.push(tokens[++i].replace(/^['"]|['"]$/g, ''));
+        } else if (t === '--name') {
+            containerName = tokens[++i].replace(/^['"]|['"]$/g, '');
+            serviceName = containerName.replace(/[^a-zA-Z0-9_-]/g, '_');
+        } else if (t === '--restart') {
+            restart = tokens[++i].replace(/^['"]|['"]$/g, '');
+        } else if (!t.startsWith('-') && i === tokens.length - 1) {
+            image = t;
+        }
+    }
+
+    let yaml = `version: '3.8'\n\nservices:\n  ${serviceName}:\n    image: ${image}\n`;
+    if (containerName) yaml += `    container_name: ${containerName}\n`;
+    if (restart) yaml += `    restart: ${restart}\n`;
+    
+    if (ports.length > 0) {
+        yaml += `    ports:\n`;
+        ports.forEach(p => yaml += `      - "${p}"\n`);
+    }
+    
+    if (environment.length > 0) {
+        yaml += `    environment:\n`;
+        environment.forEach(e => yaml += `      - ${e}\n`);
+    }
+    
+    if (volumes.length > 0) {
+        yaml += `    volumes:\n`;
+        volumes.forEach(v => yaml += `      - ${v}\n`);
+    }
+
+    return yaml;
+}
+
+function convert() {
+    let input = document.getElementById('dockerInput').value;
+    document.getElementById('dockerOutput').value = parseDockerRun(input);
+}
+
+document.getElementById('btnConvertDocker').addEventListener('click', convert);
+document.getElementById('btnSampleDocker').addEventListener('click', () => {
+    document.getElementById('dockerInput').value = 'docker run -d --name postgres-db -p 5432:5432 -v pg_data:/var/lib/postgresql/data -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=supersecret --restart unless-stopped postgres:16-alpine';
+    convert();
+});
+
+document.getElementById('btnCopyDocker').addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('dockerOutput').value);
+    alert('Docker Compose YAML copied to clipboard!');
+});
+
+document.getElementById('btnDownloadDocker').addEventListener('click', () => {
+    let blob = new Blob([document.getElementById('dockerOutput').value], {type: 'text/yaml'});
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'docker-compose.yml';
+    a.click();
+});
+
+document.getElementById('btnSampleDocker').click();
+</script>\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv4 Subnet & CIDR Calculator - DevEngine Pro - DevEngine Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        pre, code, textarea, input.font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+    
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">\n<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+        <div class="h-8 w-8 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-lg">⚡</div>
+        <a href="index.html" class="text-lg font-bold text-white tracking-tight hover:text-emerald-400 transition">DevEngine <span class="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full ml-1">Pro Suite</span></a>
+    </div>
+    <div class="hidden lg:flex items-center space-x-5 text-xs font-medium text-slate-400">
+        <a href="json-to-ts.html" class="hover:text-emerald-400 transition">JSON to TS</a>
+        <a href="jwt-debugger.html" class="hover:text-emerald-400 transition">JWT</a>
+        <a href="cron-visualizer.html" class="hover:text-emerald-400 transition">Cron</a>
+        <a href="sql-optimizer.html" class="hover:text-emerald-400 transition">SQL</a>
+        <a href="regex-tester.html" class="hover:text-emerald-400 transition">RegEx</a>
+        <a href="curl-converter.html" class="hover:text-emerald-400 transition">cURL</a>
+        <a href="token-cost-calculator.html" class="hover:text-emerald-400 transition">LLM Cost</a>
+        <a href="index.html" class="text-emerald-400 hover:underline font-semibold">All 30 Tools &rarr;</a>
+    </div>
+    <div class="flex items-center space-x-3">
+        <button onclick="copyWallet()" class="flex items-center space-x-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer">
+            <i class="fa-solid fa-wallet text-emerald-400"></i>
+            <span>Tip Creator (EVM)</span>
+        </button>
+    </div>
+</nav>\n<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex items-center space-x-3 mb-6">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <i class="fa-solid fa-network-wired text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-white">IPv4 Subnet & CIDR Calculator</h1>
+            <p class="text-xs text-slate-400">Calculate usable IP ranges, subnet masks, wildcard masks, broadcast addresses, and binary bitwise representations.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+            <h3 class="text-sm font-semibold text-white mb-2"><i class="fa-solid fa-sliders text-emerald-400 mr-2"></i>CIDR Configuration</h3>
+            
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">IP Address</label>
+                <input type="text" id="ipInput" value="192.168.1.1" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 font-mono">
+            </div>
+
+            <div>
+                <label class="text-xs text-slate-400 block mb-1">Subnet Prefix (CIDR / Mask)</label>
+                <select id="cidrSelect" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 font-mono"></select>
+            </div>
+
+            <div class="pt-2">
+                <button id="btnCalcCIDR" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold">
+                    <i class="fa-solid fa-calculator mr-1.5"></i>Calculate Subnet
+                </button>
+            </div>
+
+            <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg space-y-1.5 text-[11px] text-slate-400">
+                <div class="flex justify-between"><span>Private RFC 1918:</span><span class="text-emerald-400 font-semibold" id="isPrivate">Yes</span></div>
+                <div class="flex justify-between"><span>IP Class:</span><span class="text-slate-200" id="ipClass">Class C</span></div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+            <div>
+                <h3 class="text-sm font-semibold text-white mb-4"><i class="fa-solid fa-list-check text-emerald-400 mr-2"></i>Calculated Network Properties</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Network Address</span>
+                        <span class="text-emerald-400 font-mono text-sm font-semibold" id="netAddr">192.168.1.0</span>
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Broadcast Address</span>
+                        <span class="text-emerald-400 font-mono text-sm font-semibold" id="bcastAddr">192.168.1.255</span>
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Usable Host Range</span>
+                        <span class="text-slate-200 font-mono" id="hostRange">192.168.1.1 - 192.168.1.254</span>
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Usable Host Count</span>
+                        <span class="text-sky-400 font-mono font-bold" id="hostCount">254</span>
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Subnet Mask</span>
+                        <span class="text-slate-200 font-mono" id="netMask">255.255.255.0</span>
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-lg">
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Wildcard Mask</span>
+                        <span class="text-slate-200 font-mono" id="wildMask">0.0.0.255</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-slate-950 border border-slate-800 rounded-lg font-mono text-[11px] space-y-1">
+                    <div class="text-slate-500 text-[10px] uppercase font-bold mb-1">Binary Representation</div>
+                    <div class="flex justify-between text-slate-300"><span>IP:</span><span id="ipBinary">11000000.10101000.00000001.00000001</span></div>
+                    <div class="flex justify-between text-emerald-400"><span>Mask:</span><span id="maskBinary">11111111.11111111.11111111.00000000</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-900/60 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg border border-emerald-500/20"><i class="fa-brands fa-ethereum"></i></div>
+            <div><div class="text-sm font-bold text-white">100% Free & Open Developer Tools</div><div class="text-xs text-slate-400">Zero telemetry, local client execution. Consider tipping if this tool saved you time!</div></div>
+        </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto"><button onclick="copyWallet()" class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center justify-center space-x-2"><i class="fa-regular fa-copy"></i><span>Copy EVM Address (BSC/ETH/Polygon)</span></button></div>
+    </div>
+</div>
+
+<script>
+const cidrSelect = document.getElementById('cidrSelect');
+for (let i = 1; i <= 32; i++) {
+    let opt = document.createElement('option');
+    opt.value = i;
+    let maskInt = i === 0 ? 0 : (~0 << (32 - i)) >>> 0;
+    let mStr = [(maskInt >>> 24) & 255, (maskInt >>> 16) & 255, (maskInt >>> 8) & 255, maskInt & 255].join('.');
+    opt.textContent = `/${i} (${mStr})`;
+    if (i === 24) opt.selected = true;
+    cidrSelect.appendChild(opt);
+}
+
+function ipToInt(ip) {
+    return ip.split('.').reduce((acc, oct) => ((acc << 8) + parseInt(oct, 10)) >>> 0, 0);
+}
+
+function intToIp(int) {
+    return [(int >>> 24) & 255, (int >>> 16) & 255, (int >>> 8) & 255, int & 255].join('.');
+}
+
+function intToBinary(int) {
+    return [(int >>> 24) & 255, (int >>> 16) & 255, (int >>> 8) & 255, int & 255]
+        .map(b => b.toString(2).padStart(8, '0')).join('.');
+}
+
+function calculate() {
+    let ipStr = document.getElementById('ipInput').value.trim();
+    let maskBits = parseInt(cidrSelect.value, 10);
+    if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(ipStr)) {
+        alert('Invalid IPv4 address format.');
+        return;
+    }
+    let ip = ipToInt(ipStr);
+    let mask = maskBits === 0 ? 0 : (~0 << (32 - maskBits)) >>> 0;
+    let wildcard = (~mask) >>> 0;
+    let network = (ip & mask) >>> 0;
+    let broadcast = (network | wildcard) >>> 0;
+    let firstHost = maskBits >= 31 ? network : (network + 1) >>> 0;
+    let lastHost = maskBits >= 31 ? broadcast : (broadcast - 1) >>> 0;
+    let totalHosts = Math.pow(2, 32 - maskBits);
+    let usableHosts = maskBits >= 31 ? totalHosts : Math.max(totalHosts - 2, 0);
+
+    document.getElementById('netAddr').textContent = intToIp(network);
+    document.getElementById('bcastAddr').textContent = intToIp(broadcast);
+    document.getElementById('hostRange').textContent = `${intToIp(firstHost)} - ${intToIp(lastHost)}`;
+    document.getElementById('hostCount').textContent = usableHosts.toLocaleString();
+    document.getElementById('netMask').textContent = intToIp(mask);
+    document.getElementById('wildMask').textContent = intToIp(wildcard);
+    document.getElementById('ipBinary').textContent = intToBinary(ip);
+    document.getElementById('maskBinary').textContent = intToBinary(mask);
+
+    let firstOct = parseInt(ipStr.split('.')[0], 10);
+    let isPriv = (firstOct === 10) || (firstOct === 172 && parseInt(ipStr.split('.')[1], 10) >= 16 && parseInt(ipStr.split('.')[1], 10) <= 31) || (firstOct === 192 && parseInt(ipStr.split('.')[1], 10) === 168);
+    document.getElementById('isPrivate').textContent = isPriv ? 'Yes (RFC 1918 Private)' : 'No (Public WAN IP)';
+    document.getElementById('isPrivate').className = isPriv ? 'text-emerald-400 font-semibold' : 'text-sky-400 font-semibold';
+}
+
+document.getElementById('btnCalcCIDR').addEventListener('click', calculate);
+document.getElementById('cidrSelect').addEventListener('change', calculate);
+document.getElementById('ipInput').addEventListener('input', calculate);
+calculate();
+</script>\n<footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-8 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>&copy; 2026 DevEngine Pro Suite. High-concurrency developer intelligence toolkit.</div>
+        <div class="flex items-center space-x-4">
+            <a href="index.html" class="hover:text-emerald-400 transition">All Tools</a>
+            <span>•</span>
+            <span class="text-slate-400 font-mono">BSC / Polygon / Base: 0x4DF1...88DE</span>
+        </div>
+    </div>
+</footer>
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-lg font-bold text-xs shadow-xl hidden flex items-center space-x-2 z-50 transition-all">
+    <i class="fa-solid fa-check"></i>
+    <span id="toast-msg">Copied to clipboard!</span>
+</div>
+<script>
+const EVM_WALLET = '0x4DF12f27bEDC11EDEAfa6154A193C65a329388DE';
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').innerText = msg;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 2500);
+}
+function copyWallet() {
+    navigator.clipboard.writeText(EVM_WALLET);
+    showToast('EVM Wallet Address copied to clipboard!');
+}
+function copyText(elemId) {
+    const el = document.getElementById(elemId);
+    if(el) {
+        navigator.clipboard.writeText(el.value || el.innerText);
+        showToast('Result copied to clipboard!');
+    }
+}
+</script>
+</body>
+</html>
